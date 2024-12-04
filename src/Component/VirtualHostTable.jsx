@@ -1,8 +1,9 @@
 import * as React from 'react';
 import './VirtualHostTable.css';
+import PHPIcon from "../Icons/PHPIcon.jsx";
 
 const columnOptions = [
-    { key: 'name', label: 'Name' },
+    { key: 'application', label: 'Application' },
     { key: 'document_root', label: 'Document Root' },
     { key: 'php_version', label: 'PHP Version' },
     { key: 'local_domain', label: 'Local Domain' },
@@ -10,7 +11,7 @@ const columnOptions = [
 ];
 
 const VirtualHostTable = () => {
-    const [visibleColumns, setVisibleColumns] = React.useState(columnOptions.map(col => col.key).filter(key => key !== 'document_root'));
+    const [visibleColumns, setVisibleColumns] = React.useState(columnOptions.map(col => col.key).filter(key => key !== 'document_root' && key !== 'name'));
     const [virtualHosts, setVirtualHosts] = React.useState([]);
 
     const [searchQuery, setSearchQuery] = React.useState('');
@@ -93,7 +94,7 @@ const VirtualHostTable = () => {
             <table>
                 <thead>
                     <tr>
-                        {visibleColumns.includes('name') && <th>Name</th>}
+                        {visibleColumns.includes('application') && <th>Application</th>}
                         {visibleColumns.includes('document_root') && <th>Document Root</th>}
                         {visibleColumns.includes('php_version') && <th>PHP Version</th>}
                         {visibleColumns.includes('local_domain') && <th>Local Domain</th>}
@@ -103,9 +104,9 @@ const VirtualHostTable = () => {
                 <tbody>
                     {filteredHosts.map((host) => (
                         <tr key={host.id}>
-                            {visibleColumns.includes('name') && <td>{host.name}</td>}
+                            {visibleColumns.includes('application') && <td><PHPIcon /></td>}
                             {visibleColumns.includes('document_root') && <td>{host.document_root}</td>}
-                            {visibleColumns.includes('php_version') && <td>{host.php_version}</td>}
+                            {visibleColumns.includes('php_version') && <td> {host.php_version} </td>}
                             {visibleColumns.includes('local_domain') && (
                                 <td>
                                     <a href="#" onClick={() => window.electron.openExternal(`http://${host.local_domain}`)}>
@@ -115,9 +116,18 @@ const VirtualHostTable = () => {
                             )}
                             {visibleColumns.includes('actions') && (
                                 <td>
+                                    <div style={{
+                                        width: '25px',
+                                        display: 'flex',
+                                        gap: '10px'
+                                    }}>
+                                    <button className="edit-button" onClick={() => handleEdit(host.id)}>
+                                        Edit
+                                    </button>
                                     <button className="delete-button" onClick={() => handleRemove(host.id)}>
                                         Delete
                                     </button>
+                                    </div>
                                 </td>
                             )}
                         </tr>
