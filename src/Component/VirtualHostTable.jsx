@@ -1,5 +1,6 @@
 import * as React from 'react';
 import './VirtualHostTable.css';
+
 const columnOptions = [
     { key: 'name', label: 'Name' },
     { key: 'document_root', label: 'Document Root' },
@@ -12,6 +13,7 @@ const VirtualHostTable = () => {
     const [visibleColumns, setVisibleColumns] = React.useState(columnOptions.map(col => col.key).filter(key => key !== 'document_root'));
     const [virtualHosts, setVirtualHosts] = React.useState([]);
 
+    const [searchQuery, setSearchQuery] = React.useState('');
     const [dropdownOpen, setDropdownOpen] = React.useState(false);
 
     const dropdownRef = React.useRef(null);
@@ -34,6 +36,12 @@ const VirtualHostTable = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [dropdownRef]);
+    const filteredHosts = virtualHosts.filter(host =>
+        host.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        host.document_root.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        host.php_version.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        host.local_domain.toLowerCase().includes(searchQuery.toLowerCase())
+    );
     const handleRemove = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to remove this virtual host?");
         if (confirmDelete) {
@@ -53,57 +61,64 @@ const VirtualHostTable = () => {
 
     return (
         <div>
-            <div className="dropdown" ref={dropdownRef}>
-                <button onClick={() => setDropdownOpen(!dropdownOpen)} className="dropdown-button">
-                    Show Columns
-                </button>
-                {dropdownOpen && (
-                    <div className="dropdown-content">
-                        {columnOptions.map(option => (
-                            <label key={option.key}>
-                                <input
-                                    type="checkbox"
-                                    checked={visibleColumns.includes(option.key)}
-                                    onChange={() => toggleColumnVisibility(option.key)}
-                                />
-                                {option.label}
-                            </label>
-                        ))}
-                    </div>
-                )}
-            </div>
-        <table>
-            <thead>
-                <tr>
-                    {visibleColumns.includes('name') && <th>Name</th>}
-                    {visibleColumns.includes('document_root') && <th>Document Root</th>}
-                    {visibleColumns.includes('php_version') && <th>PHP Version</th>}
-                    {visibleColumns.includes('local_domain') && <th>Local Domain</th>}
-                    {visibleColumns.includes('actions') && <th>Actions</th>}
-                </tr>
-            </thead>
-            <tbody>
-                {virtualHosts.map((host) => (
-                    <tr key={host.id}>
-                        {visibleColumns.includes('name') && <td>{host.name}</td>}
-                        {visibleColumns.includes('document_root') && <td>{host.document_root}</td>}
-                        {visibleColumns.includes('php_version') && <td>{host.php_version}</td>}
-                        {visibleColumns.includes('local_domain') && (
-                            <td>
-                                <a href="#" onClick={() => window.electron.openExternal(`http://${host.local_domain}`)}>
-                                    {host.local_domain}
-                                </a>
-                            </td>
-                        )}
-                        {visibleColumns.includes('actions') && (
-                            <td>
-                                <button onClick={() => handleRemove(host.id)}>Remove</button>
-                            </td>
-                        )}
+            <div>
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+
+                />
+                    <button onClick={() => setDropdownOpen(!dropdownOpen)} className="dropdown-button">
+                        Show Columns
+                    </button>
+                    {dropdownOpen && (
+                        <div className="dropdown-content">
+                            {columnOptions.map(option => (
+                                <label key={option.key}>
+                                    <input
+                                        type="checkbox"
+                                        checked={visibleColumns.includes(option.key)}
+                                        onChange={() => toggleColumnVisibility(option.key)}
+                                    />
+                                    {option.label}
+                                </label>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            <table>
+                <thead>
+                    <tr>
+                        {visibleColumns.includes('name') && <th>Name</th>}
+                        {visibleColumns.includes('document_root') && <th>Document Root</th>}
+                        {visibleColumns.includes('php_version') && <th>PHP Version</th>}
+                        {visibleColumns.includes('local_domain') && <th>Local Domain</th>}
+                        {visibleColumns.includes('actions') && <th>Actions</th>}
                     </tr>
-                ))}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {filteredHosts.map((host) => (
+                        <tr key={host.id}>
+                            {visibleColumns.includes('name') && <td>{host.name}</td>}
+                            {visibleColumns.includes('document_root') && <td>{host.document_root}</td>}
+                            {visibleColumns.includes('php_version') && <td>{host.php_version}</td>}
+                            {visibleColumns.includes('local_domain') && (
+                                <td>
+                                    <a href="#" onClick={() => window.electron.openExternal(`http://${host.local_domain}`)}>
+                                        {host.local_domain}
+                                    </a>
+                                </td>
+                            )}
+                            {visibleColumns.includes('actions') && (
+                                <td>
+                                    <button onClick={() => handleRemove(host.id)}>Remove</button>
+                                </td>
+                            )}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 };
