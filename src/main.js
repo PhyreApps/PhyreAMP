@@ -1,5 +1,6 @@
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { saveVirtualHost, getVirtualHosts, removeVirtualHost } from './database';
+import { generateHttpdConf } from './virtualHostBuilder';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import { startContainer, stopContainer, restartContainer, getContainerStatus } from './dockerService';
@@ -136,6 +137,15 @@ ipcMain.handle('restart-container', async (event, containerName) => {
   try {
     const output = await restartContainer(containerName);
     return { success: true, output };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('generate-httpd-conf', async () => {
+  try {
+    await generateHttpdConf();
+    return { success: true, message: 'httpd.conf file generated successfully.' };
   } catch (error) {
     return { success: false, error: error.message };
   }

@@ -1,4 +1,5 @@
 import { app } from 'electron';
+import { generateHttpdConf } from './virtualHostBuilder';
 import path from 'node:path';
 import sqlite3 from 'sqlite3';
 
@@ -33,7 +34,7 @@ export const removeVirtualHost = (id) => {
             if (err) {
                 reject(err);
             } else {
-                resolve();
+                generateHttpdConf().then(resolve).catch(reject);
             }
         });
     });
@@ -49,7 +50,7 @@ export const saveVirtualHost = (data) => {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(this.lastID);
+                    generateHttpdConf().then(() => resolve(this.lastID)).catch(reject);
                 }
             }
         );
