@@ -8,21 +8,6 @@
     width: 100%;
 }
 
-.docker-control button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin-right: 5px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-}
-
-.docker-control button:hover {
-    background-color: #45a049;
-}
-
 .docker-control p {
     margin: 10px 0;
     font-weight: bold;

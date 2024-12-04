@@ -26,9 +26,9 @@ tr:hover {
 }
 
 button {
-    background-color: #4CAF50;
+    border: 2px solid #4CAF50;
+    background: transparent;
     color: white;
-    border: none;
     padding: 8px 16px;
     text-align: center;
     text-decoration: none;
@@ -60,11 +60,11 @@ input[type="text"], select {
     padding: 12px 20px;
     margin: 8px 0;
     display: inline-block;
-    border: 1px solid #555;
     border-radius: 4px;
     box-sizing: border-box;
     transition: border-color 0.3s ease;
-    background-color: #222;
+    background-color: #101920;
+    border: 1px solid rgba(16, 25, 32, 0.78);
     color: #fff;
 }
 

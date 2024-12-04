@@ -19,31 +19,3 @@ label {
     color: #fff;
 }
 
-input[type="text"], select {
-    width: calc(100% - 22px);
-    padding: 10px;
-    border-radius: 4px;
-    box-sizing: border-box;
-    transition: border-color 0.3s ease;
-    background-color: #101920;
-    border: 1px solid #101920;
-    color: #fff;
-}
-
-input[type="text"]:focus, select:focus {
-    border-color: #4CAF50;
-}
-
-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #45a049;
-}
