@@ -7,9 +7,9 @@ import DockerControl from './Component/DockerControl.jsx';
 const root = createRoot(document.getElementById('app'));
 root.render(
     <>
+        <DockerControl />
         <VirtualHostForm />
         <VirtualHostTable />
-        <DockerControl />
     </>
 );
 
