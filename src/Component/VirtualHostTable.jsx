@@ -36,12 +36,10 @@ const VirtualHostTable = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [dropdownRef]);
-    const filteredHosts = virtualHosts.filter(host =>
-        host.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        host.document_root.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        host.php_version.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        host.local_domain.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredHosts = virtualHosts.filter(host => {
+        const regex = new RegExp(searchQuery.split(' ').map(term => `(?=.*${term})`).join(''), 'i');
+        return regex.test(`${host.name} ${host.document_root} ${host.php_version} ${host.local_domain}`);
+    });
     const handleRemove = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to remove this virtual host?");
         if (confirmDelete) {
