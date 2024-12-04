@@ -82,3 +82,40 @@ label {
     font-weight: bold;
     color: #fff;
 }
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.dropdown-button {
+    background-color: #192229;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.dropdown-content {
+    display: block;
+    position: absolute;
+    background-color: #192229;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.dropdown-content label {
+    display: block;
+    color: white;
+    padding: 5px;
+    text-decoration: none;
+}
+
+.dropdown-content label:hover {
+    background-color: #101920;
+}

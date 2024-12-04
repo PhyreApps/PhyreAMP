@@ -12,6 +12,8 @@ const VirtualHostTable = () => {
     const [visibleColumns, setVisibleColumns] = React.useState(columnOptions.map(col => col.key));
     const [virtualHosts, setVirtualHosts] = React.useState([]);
 
+    const [dropdownOpen, setDropdownOpen] = React.useState(false);
+
     const fetchVirtualHosts = async () => {
         const hosts = await window.electron.ipcRenderer.invoke('get-virtual-hosts');
         setVirtualHosts(hosts);
@@ -39,17 +41,24 @@ const VirtualHostTable = () => {
 
     return (
         <div>
-            <div>
-                {columnOptions.map(option => (
-                    <label key={option.key}>
-                        <input
-                            type="checkbox"
-                            checked={visibleColumns.includes(option.key)}
-                            onChange={() => toggleColumnVisibility(option.key)}
-                        />
-                        {option.label}
-                    </label>
-                ))}
+            <div className="dropdown">
+                <button onClick={() => setDropdownOpen(!dropdownOpen)} className="dropdown-button">
+                    Show Columns
+                </button>
+                {dropdownOpen && (
+                    <div className="dropdown-content">
+                        {columnOptions.map(option => (
+                            <label key={option.key}>
+                                <input
+                                    type="checkbox"
+                                    checked={visibleColumns.includes(option.key)}
+                                    onChange={() => toggleColumnVisibility(option.key)}
+                                />
+                                {option.label}
+                            </label>
+                        ))}
+                    </div>
+                )}
             </div>
         <table>
             <thead>
