@@ -30,7 +30,6 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow();
-
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   app.on('activate', () => {
@@ -38,15 +37,6 @@ app.whenReady().then(() => {
       createWindow();
     }
   });
-});
-
-ipcMain.handle('get-virtual-hosts', async () => {
-  try {
-    const hosts = await getVirtualHosts();
-    return hosts;
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -68,6 +58,15 @@ ipcMain.handle('save-virtual-host', async (event, formData) => {
   try {
     const id = await saveVirtualHost(formData);
     return { success: true, id };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('get-virtual-hosts', async () => {
+  try {
+    const hosts = await getVirtualHosts();
+    return hosts;
   } catch (error) {
     return { success: false, error: error.message };
   }
