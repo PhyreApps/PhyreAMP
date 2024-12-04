@@ -23,6 +23,9 @@ const generateHttpdConf = async () => {
         });
 
         const configPath = path.join(__dirname, 'httpd.conf');
+
+        console.log('configPath:', configPath);
+
         fs.writeFileSync(configPath, configContent);
         console.log('httpd.conf file generated successfully.');
     } catch (error) {
