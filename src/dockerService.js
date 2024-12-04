@@ -1,5 +1,5 @@
 const Docker = require('dockerode');
-const docker = new Docker();
+var docker = new Docker();
 
 const startContainer = async (containerName) => {
     try {

@@ -8,7 +8,47 @@ const DockerControl = () => {
         setContainerName(e.target.value);
     };
 
+    const isDockerRunning = async () => {
+        try {
+            const result = await window.electron.ipcRenderer.invoke('status-container', 'phyrexamp-phpmyadmin');
+            return result.output.includes('running');
+        } catch {
+            return false;
+        }
+    };
+
+    const startDockerApp = async () => {
+        try {
+            await window.electron.ipcRenderer.invoke('start-docker-app');
+            alert('Docker app started successfully.');
+        } catch (error) {
+            alert(`Error starting Docker app: ${error.message}`);
+        }
+    };
+
+    React.useEffect(() => {
+        const fetchDockerStatus = async () => {
+            const result = await window.electron.ipcRenderer.invoke('status-container', 'phyrexamp-phpmyadmin');
+            if (result.success) {
+                setStatus(result.output);
+            } else {
+                setStatus(`Error fetching Docker status: ${result.error}`);
+            }
+        };
+        fetchDockerStatus();
+    }, []);
     const executeCommand = async (command) => {
+        const dockerRunning = await isDockerRunning();
+        alert(dockerRunning);
+
+        if (!dockerRunning) {
+            const startDocker = window.confirm('Docker is not running. Would you like to start it?');
+            if (startDocker) {
+                await startDockerApp();
+            } else {
+                return;
+            }
+        }
         const result = await window.electron.ipcRenderer.invoke(command, containerName);
         if (result.success) {
             alert(`${command} executed successfully!`);

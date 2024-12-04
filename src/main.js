@@ -3,6 +3,7 @@ import { saveVirtualHost, getVirtualHosts, removeVirtualHost } from './database'
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import { startContainer, stopContainer, restartContainer, getContainerStatus } from './dockerService';
+import { exec } from 'child_process';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -38,6 +39,18 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     }
+  });
+});
+
+ipcMain.handle('start-docker-app', async () => {
+  return new Promise((resolve, reject) => {
+    exec('open -a Docker', (error) => {
+      if (error) {
+        reject(new Error('Failed to start Docker app.'));
+      } else {
+        resolve();
+      }
+    });
   });
 });
 
