@@ -65,6 +65,7 @@ const VirtualHostTable = () => {
                     placeholder="Search..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search..."
                 />
                 <div className="dropdown">
                 <button onClick={() => setDropdownOpen(!dropdownOpen)}

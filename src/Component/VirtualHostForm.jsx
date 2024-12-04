@@ -54,13 +54,13 @@ const VirtualHostForm = () => {
             <div>
                 <label>
                     Name:
-                    <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+                    <input type="text" name="name" value={formData.name} onChange={handleChange} required placeholder="Enter name" />
                 </label>
             </div>
             <div>
                 <label>
                     Document Root:
-                    <input type="text" name="document_root" value={formData.document_root} onChange={handleChange} required />
+                    <input type="text" name="document_root" value={formData.document_root} onChange={handleChange} required placeholder="Select document root" />
                     <button type="button" className="button" onClick={handleFolderSelect}>Select Folder</button>
                 </label>
             </div>
@@ -78,7 +78,7 @@ const VirtualHostForm = () => {
             <div>
                 <label>
                     Local Domain:
-                    <input type="text" name="local_domain" value={formData.local_domain} onChange={handleChange} required />
+                    <input type="text" name="local_domain" value={formData.local_domain} onChange={handleChange} required placeholder="Enter local domain" />
                 </label>
             </div>
             <button type="submit" className="button">Create Virtual Host</button>
