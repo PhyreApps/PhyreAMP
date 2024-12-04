@@ -1,13 +1,14 @@
 .tabs {
     display: flex;
     margin-top: 20px;
+    width: 100%;
 }
 
 .tabs button {
-    flex: 1;
+    width: 100%;
     padding: 10px;
     cursor: pointer;
-    background-color: #f1f1f1;
+    background-color: #101920;
     border: none;
     border-bottom: 2px solid transparent;
     transition: background-color 0.3s ease, border-bottom 0.3s ease;
@@ -20,8 +21,8 @@
 }
 
 .tabs button.inactive {
-    background-color: #e0e0e0;
-    color: #666;
+    background-color: #101920;
+    color: #fff;
     border-bottom: 2px solid transparent;
 }
 

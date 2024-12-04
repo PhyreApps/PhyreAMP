@@ -1,19 +1,11 @@
 .docker-control {
     padding: 20px;
-    border: 1px solid rgba(221, 221, 221, 0.07);
-    background-color: rgba(249, 249, 249, 0.07);
+    border: 1px solid #101920;
+    background-color: #101920;
     border-radius: 8px;
     margin-top: 20px;
     color: #fff;
-}
-
-.docker-control input[type="text"] {
-    width: calc(100% - 22px);
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
+    width: 100%;
 }
 
 .docker-control button {
@@ -34,4 +26,5 @@
 .docker-control p {
     margin: 10px 0;
     font-weight: bold;
+    color: #fff;
 }
