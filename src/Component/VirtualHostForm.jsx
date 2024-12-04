@@ -34,14 +34,18 @@ const VirtualHostForm = () => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validateDomain(formData.local_domain)) {
             alert('Please enter a valid domain format.');
             return;
         }
-        console.log('Form submitted:', formData);
-        alert('Form submitted! Check the console for the form data.');
+        const result = await ipcRenderer.invoke('save-virtual-host', formData);
+        if (result.success) {
+            alert('Virtual host saved successfully!');
+        } else {
+            alert(`Error saving virtual host: ${result.error}`);
+        }
     };
 
     return (

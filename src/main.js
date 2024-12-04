@@ -1,4 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
+import { saveVirtualHost } from './database';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 
@@ -54,7 +55,14 @@ ipcMain.handle('select-folder', async () => {
   });
   return result;
 });
-// code. You can also put them in separate files and import them here.
+ipcMain.handle('save-virtual-host', async (event, formData) => {
+  try {
+    const id = await saveVirtualHost(formData);
+    return { success: true, id };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
 
 console.log('👋 This message is being logged by "main.js"');
 
