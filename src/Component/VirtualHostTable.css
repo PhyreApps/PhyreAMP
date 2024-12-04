@@ -119,3 +119,9 @@ label {
 .dropdown-content label:hover {
     background-color: #101920;
 }
+.virtual-host-table-wrapper {
+    background-color: #192229;
+    border: 1px solid #192229;
+    padding: 20px;
+    border-radius: 8px;
+}

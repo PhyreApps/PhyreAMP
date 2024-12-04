@@ -58,7 +58,7 @@ const VirtualHostTable = () => {
     };
 
     return (
-        <div>
+        <div className="virtual-host-table-wrapper">
             <div>
                 <input
                     type="text"
