@@ -60,7 +60,7 @@ const VirtualHostForm = () => {
             <div>
                 <label>
                     Document Root:
-                    <input type="text" name="document_root" value={formData.document_root} readOnly required />
+                    <input type="text" name="document_root" value={formData.document_root} onChange={handleChange} required />
                     <button type="button" onClick={handleFolderSelect}>Select Folder</button>
                 </label>
             </div>
