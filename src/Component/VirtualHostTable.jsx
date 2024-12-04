@@ -9,10 +9,12 @@ const columnOptions = [
 ];
 
 const VirtualHostTable = () => {
-    const [visibleColumns, setVisibleColumns] = React.useState(columnOptions.map(col => col.key));
+    const [visibleColumns, setVisibleColumns] = React.useState(columnOptions.map(col => col.key).filter(key => key !== 'document_root'));
     const [virtualHosts, setVirtualHosts] = React.useState([]);
 
     const [dropdownOpen, setDropdownOpen] = React.useState(false);
+
+    const dropdownRef = React.useRef(null);
 
     const fetchVirtualHosts = async () => {
         const hosts = await window.electron.ipcRenderer.invoke('get-virtual-hosts');
@@ -21,7 +23,17 @@ const VirtualHostTable = () => {
 
     React.useEffect(() => {
         fetchVirtualHosts();
-    }, []);
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [dropdownRef]);
     const handleRemove = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to remove this virtual host?");
         if (confirmDelete) {
@@ -41,7 +53,7 @@ const VirtualHostTable = () => {
 
     return (
         <div>
-            <div className="dropdown">
+            <div className="dropdown" ref={dropdownRef}>
                 <button onClick={() => setDropdownOpen(!dropdownOpen)} className="dropdown-button">
                     Show Columns
                 </button>
