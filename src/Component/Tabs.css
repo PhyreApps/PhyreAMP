@@ -8,7 +8,7 @@
     width: 100%;
     padding: 10px;
     cursor: pointer;
-    background-color: #101920;
+    background-color: #192229;
     border: none;
     border-bottom: 2px solid transparent;
     transition: background-color 0.3s ease, border-bottom 0.3s ease;
@@ -21,7 +21,7 @@
 }
 
 .tabs button.inactive {
-    background-color: #101920;
+    background-color: #192229;
     color: #fff;
     border-bottom: 2px solid transparent;
 }
