@@ -5,9 +5,9 @@ const startContainer = async (containerName) => {
     try {
         const container = docker.getContainer(containerName);
         await container.start();
-        return `Container ${containerName} started successfully.`;
+        return { success: true, message: `Container ${containerName} started successfully.` };
     } catch (error) {
-        throw new Error(`Error starting container ${containerName}: ${error.message}`);
+        return { success: false, error: `Error starting container ${containerName}: ${error.message}` };
     }
 };
 
@@ -15,9 +15,9 @@ const stopContainer = async (containerName) => {
     try {
         const container = docker.getContainer(containerName);
         await container.stop();
-        return `Container ${containerName} stopped successfully.`;
+        return { success: true, message: `Container ${containerName} stopped successfully.` };
     } catch (error) {
-        throw new Error(`Error stopping container ${containerName}: ${error.message}`);
+        return { success: false, error: `Error stopping container ${containerName}: ${error.message}` };
     }
 };
 
@@ -25,9 +25,9 @@ const restartContainer = async (containerName) => {
     try {
         const container = docker.getContainer(containerName);
         await container.restart();
-        return `Container ${containerName} restarted successfully.`;
+        return { success: true, message: `Container ${containerName} restarted successfully.` };
     } catch (error) {
-        throw new Error(`Error restarting container ${containerName}: ${error.message}`);
+        return { success: false, error: `Error restarting container ${containerName}: ${error.message}` };
     }
 };
 
@@ -35,9 +35,9 @@ const getContainerStatus = async (containerName) => {
     try {
         const container = docker.getContainer(containerName);
         const data = await container.inspect();
-        return `Container ${containerName} is ${data.State.Status}.`;
+        return { success: true, message: `Container ${containerName} is ${data.State.Status}.` };
     } catch (error) {
-        throw new Error(`Error getting status of container ${containerName}: ${error.message}`);
+        return { success: false, error: `Error fetching status for container ${containerName}: ${error.message}` };
     }
 };
 

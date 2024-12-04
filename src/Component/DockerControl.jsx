@@ -3,6 +3,7 @@ import * as React from 'react';
 const DockerControl = () => {
     const [containerName, setContainerName] = React.useState('');
     const [status, setStatus] = React.useState('');
+    const [dockerRunning, setDockerRunning] = React.useState(false);
 
     const handleInputChange = (e) => {
         setContainerName(e.target.value);
@@ -27,20 +28,25 @@ const DockerControl = () => {
     };
 
     React.useEffect(() => {
+        const checkDockerRunning = async () => {
+            const running = await isDockerRunning();
+            setDockerRunning(running);
+        };
+
         const fetchDockerStatus = async () => {
+            await checkDockerRunning();
             const result = await window.electron.ipcRenderer.invoke('status-container', 'phyrexamp-phpmyadmin');
             if (result.success) {
-                setStatus(result.output);
+                setStatus(result.message);
             } else {
                 setStatus(`Error fetching Docker status: ${result.error}`);
             }
+
         };
         fetchDockerStatus();
     }, []);
     const executeCommand = async (command) => {
         const dockerRunning = await isDockerRunning();
-        alert(dockerRunning);
-
         if (!dockerRunning) {
             const startDocker = window.confirm('Docker is not running. Would you like to start it?');
             if (startDocker) {
@@ -51,9 +57,9 @@ const DockerControl = () => {
         }
         const result = await window.electron.ipcRenderer.invoke(command, containerName);
         if (result.success) {
-            alert(`${command} executed successfully!`);
+            alert(result.message);
             if (command === 'status-container') {
-                setStatus(result.output);
+                setStatus(result.message);
             }
         } else {
             alert(`Error executing ${command}: ${result.error}`);
@@ -72,7 +78,8 @@ const DockerControl = () => {
             <button onClick={() => executeCommand('stop-container')}>Stop</button>
             <button onClick={() => executeCommand('restart-container')}>Restart</button>
             <button onClick={() => executeCommand('status-container')}>Status</button>
-            {status && <p>Status: {status}</p>}
+            <p>Docker Daemon: {dockerRunning ? 'Running' : 'Not Running'}</p>
+            {status && <p>Container Status: {status}</p>}
         </div>
     );
 };
