@@ -42,6 +42,18 @@ app.whenReady().then(() => {
   });
 });
 
+ipcMain.handle('check-docker-process', async () => {
+  return new Promise((resolve) => {
+    exec('docker info', (error, stdout) => {
+      if (error) {
+        resolve({ success: false });
+      } else {
+        resolve({ success: stdout.includes('Server Version') });
+      }
+    });
+  });
+});
+
 ipcMain.handle('start-docker-app', async () => {
   return new Promise((resolve, reject) => {
     exec('open -a Docker', (error) => {

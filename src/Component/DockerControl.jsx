@@ -10,8 +10,8 @@ const DockerControl = () => {
 
     const isDockerRunning = async () => {
         try {
-            const result = await window.electron.ipcRenderer.invoke('status-container', 'phyrexamp-phpmyadmin');
-            return result.output.includes('running');
+            const result = await window.electron.ipcRenderer.invoke('check-docker-process');
+            return result.success;
         } catch {
             return false;
         }
