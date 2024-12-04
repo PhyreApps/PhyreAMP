@@ -2,12 +2,14 @@ table {
     width: 100%;
     margin-top: 20px;
     border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
     background-color: #192229;
     color: #fff;
 }
 
 th, td {
-    padding: 8px;
+    padding: 16px;
     text-align: left;
     border: 1px solid #192229;
 }

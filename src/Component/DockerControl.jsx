@@ -67,8 +67,22 @@ const DockerControl = () => {
     return (
         <div className="docker-control">
             <div className="status">
-                <p>Docker Daemon: {dockerRunning ? 'Running' : 'Not Running'}</p>
-                {status && <p>Container Status: {status}</p>}
+                {status && <div>Container Status: {status}</div>}
+
+                {dockerRunning && <>
+                    <div style={
+                        {
+                            display: 'flex',
+                            flexDirection: 'column',
+                            marginTop: '10px',
+                            gap: '5px',
+                        }
+                    }>
+                        <a onClick={() => window.electron.openExternal(`http://localhost`)} target="_blank">Running on http://localhost</a>
+                        <a onClick={() => window.electron.openExternal(`http://localhost:8081`)} target="_blank">Open PhpMyAdmin</a>
+                    </div></>
+                }
+
             </div>
             <div className="buttons">
                 {!dockerRunning && <button onClick={() => executeCommand('start-container')}>Start</button>}
