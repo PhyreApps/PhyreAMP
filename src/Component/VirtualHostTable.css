@@ -35,7 +35,7 @@ button {
     color: white;
     background: transparent;
     border: 2px solid #4CAF50;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -60,7 +60,7 @@ input[type="text"], select {
     padding: 12px 20px;
     margin: 8px 0;
     display: inline-block;
-    border-radius: 4px;
+    border-radius: 8px;
     box-sizing: border-box;
     background-color: #101920;
     border: 1px solid rgba(16, 25, 32, 0.78);

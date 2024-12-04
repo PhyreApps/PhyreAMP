@@ -13,15 +13,19 @@ const App = () => {
     const [activeTab, setActiveTab] = React.useState('table');
 
     return (
-        <div style={{ padding: '20px' }}>
+        <div style={{padding: '20px'}}>
             <div style={{
                 display: 'flex',
                 justifyContent: 'center',
                 marginBottom: '20px',
             }}>
-                <PhyreXAMPLogo />
+                <PhyreXAMPLogo/>
             </div>
-            <DockerControl />
+
+            <div>
+                <DockerControl/>
+            </div>
+
             <div className="tabs">
                 <button onClick={() => setActiveTab('table')} className={activeTab === 'table' ? 'active' : 'inactive'}>
                     Virtual Hosts
@@ -32,11 +36,11 @@ const App = () => {
             </div>
             <div className="tab-content">
                 {activeTab === 'form' && <VirtualHostForm/>}
-                {activeTab === 'table' && <VirtualHostTable />}
+                {activeTab === 'table' && <VirtualHostTable/>}
             </div>
         </div>
     );
 };
 
-root.render(<App />);
+root.render(<App/>);
 
