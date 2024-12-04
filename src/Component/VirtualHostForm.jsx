@@ -2,12 +2,19 @@ import * as React from 'react';
 const { ipcRenderer } = window.electron;
 
 const VirtualHostForm = () => {
+    const phpVersions = ['php7.3', 'php7.4', 'php8.1', 'php8.2', 'php8.3'];
+
     const [formData, setFormData] = React.useState({
         name: '',
         document_root: '',
         php_version: '',
         local_domain: ''
     });
+
+    const validateDomain = (domain) => {
+        const domainPattern = /^(?!:\/\/)([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,6}$/;
+        return domainPattern.test(domain);
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -29,8 +36,11 @@ const VirtualHostForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (!validateDomain(formData.local_domain)) {
+            alert('Please enter a valid domain format.');
+            return;
+        }
         console.log('Form submitted:', formData);
-        // Here you would typically handle the form submission, e.g., send data to a server
         alert('Form submitted! Check the console for the form data.');
     };
 
@@ -52,7 +62,12 @@ const VirtualHostForm = () => {
             <div>
                 <label>
                     PHP Version:
-                    <input type="text" name="php_version" value={formData.php_version} onChange={handleChange} required />
+                    <select name="php_version" value={formData.php_version} onChange={handleChange} required>
+                        <option value="">Select PHP Version</option>
+                        {phpVersions.map(version => (
+                            <option key={version} value={version}>{version.toUpperCase()}</option>
+                        ))}
+                    </select>
                 </label>
             </div>
             <div>
