@@ -69,7 +69,7 @@ const DockerControl = () => {
             <div className="status">
                 {status && <div>Container Status: {status}</div>}
 
-                {dockerRunning && <>
+                {dockerRunning ? <>
                     <div style={
                         {
                             display: 'flex',
@@ -80,14 +80,18 @@ const DockerControl = () => {
                     }>
                         <a onClick={() => window.electron.openExternal(`http://localhost`)} target="_blank">Running on http://localhost</a>
                         <a onClick={() => window.electron.openExternal(`http://localhost:8081`)} target="_blank">Open PhpMyAdmin</a>
-                    </div></>
+                    </div></> : <div>Docker is not running.</div>
                 }
 
             </div>
             <div className="buttons">
                 {!dockerRunning && <button onClick={() => executeCommand('start-container')}>Start</button>}
-                <button onClick={() => executeCommand('stop-container')}>Stop</button>
-                <button className="restart-button" onClick={() => executeCommand('restart-container')}>Restart</button>
+                {status === 'running' || dockerRunning && (
+                    <>
+                        <button onClick={() => executeCommand('stop-container')}>Stop</button>
+                        <button className="restart-button" onClick={() => executeCommand('restart-container')}>Restart</button>
+                    </>
+                )}
             </div>
         </div>
     );

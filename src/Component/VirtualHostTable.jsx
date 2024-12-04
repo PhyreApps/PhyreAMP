@@ -40,9 +40,9 @@ const VirtualHostTable = () => {
                         <td>{host.document_root}</td>
                         <td>{host.php_version}</td>
                         <td>
-                            <button onClick={() => window.electron.openExternal(`http://${host.local_domain}`)}>
+                            <a href="#" onClick={() => window.electron.openExternal(`http://${host.local_domain}`)}>
                                 {host.local_domain}
-                            </button>
+                            </a>
                         </td>
                         <td>
                             <button onClick={() => handleRemove(host.id)}>Remove</button>

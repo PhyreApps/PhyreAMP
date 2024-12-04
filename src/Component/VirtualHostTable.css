@@ -48,13 +48,15 @@ button:hover {
 
 a {
     font-weight: bold;
-    color: #4CAF50;
+    color: #fff;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 a:hover {
     color: #45a049;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 input[type="text"], select {
