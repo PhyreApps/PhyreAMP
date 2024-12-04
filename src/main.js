@@ -2,6 +2,7 @@ import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { saveVirtualHost, getVirtualHosts, removeVirtualHost } from './database';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
+import { exec } from 'child_process';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -85,6 +86,54 @@ ipcMain.handle('remove-virtual-host', async (event, id) => {
     return { success: true };
   } catch (error) {
     return { success: false, error: error.message };
+  }
+});
+
+const executeShellScript = (scriptPath, containerName) => {
+  return new Promise((resolve, reject) => {
+    exec(`bash ${scriptPath} ${containerName}`, (error, stdout, stderr) => {
+      if (error) {
+        reject(stderr);
+      } else {
+        resolve(stdout);
+      }
+    });
+  });
+};
+
+ipcMain.handle('start-container', async (event, containerName) => {
+  try {
+    const output = await executeShellScript('/docker/commands/start-container.sh', containerName);
+    return { success: true, output };
+  } catch (error) {
+    return { success: false, error };
+  }
+});
+
+ipcMain.handle('stop-container', async (event, containerName) => {
+  try {
+    const output = await executeShellScript('/docker/commands/stop-container.sh', containerName);
+    return { success: true, output };
+  } catch (error) {
+    return { success: false, error };
+  }
+});
+
+ipcMain.handle('restart-container', async (event, containerName) => {
+  try {
+    const output = await executeShellScript('/docker/commands/restart-container.sh', containerName);
+    return { success: true, output };
+  } catch (error) {
+    return { success: false, error };
+  }
+});
+
+ipcMain.handle('status-container', async (event, containerName) => {
+  try {
+    const output = await executeShellScript('/docker/commands/status-container.sh', containerName);
+    return { success: true, output };
+  } catch (error) {
+    return { success: false, error };
   }
 });
 

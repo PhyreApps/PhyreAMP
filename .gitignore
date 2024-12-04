@@ -94,3 +94,4 @@ out/
 .idea/PhyreXAMPReactive.iml
 .idea/php.xml
 .idea/modules.xml
+/docker/mysql-data/
