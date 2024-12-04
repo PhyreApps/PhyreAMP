@@ -15,6 +15,18 @@ db.serialize(() => {
     )`);
 });
 
+export const getVirtualHosts = () => {
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM virtual_hosts`, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
 export const saveVirtualHost = (data) => {
     return new Promise((resolve, reject) => {
         const { name, document_root, php_version, local_domain } = data;

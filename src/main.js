@@ -1,5 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
-import { saveVirtualHost } from './database';
+import { saveVirtualHost, getVirtualHosts } from './database';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 
@@ -38,6 +38,15 @@ app.whenReady().then(() => {
       createWindow();
     }
   });
+});
+
+ipcMain.handle('get-virtual-hosts', async () => {
+  try {
+    const hosts = await getVirtualHosts();
+    return hosts;
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
