@@ -8,8 +8,23 @@ table {
     color: #fff;
 }
 
+.delete-button {
+    padding: 4px 8px;
+    font-size: 12px;
+    color: white;
+    background-color: #f44336;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+    background-color: #d32f2f;
+}
+
 th, td {
-    padding: 16px;
+    padding: 18px 15px;
     text-align: left;
     border: 1px solid #192229;
 }
@@ -27,7 +42,7 @@ tr:hover {
     background-color: #101920;
 }
 
-button {
+.button {
     display: inline-block;
     padding: 8px 16px;
     margin: 4px 2px;
@@ -83,9 +98,9 @@ label {
     color: #fff;
 }
 .dropdown {
-    position: relative;
     display: inline-block;
     margin-bottom: 10px;
+    position: relative;
 }
 
 .dropdown-button {
@@ -99,14 +114,17 @@ label {
 }
 
 .dropdown-content {
-    display: block;
     position: absolute;
+    display: block;
     background-color: #192229;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
     border-radius: 8px;
     padding: 10px;
+    right: 0; /* Align to the right of the button */
+    top: 100%; /* Position below the button */
+    margin-top: 5px; /* Add a small gap */
 }
 
 .dropdown-content label {
@@ -124,4 +142,25 @@ label {
     border: 1px solid #192229;
     padding: 20px;
     border-radius: 8px;
+}
+.search-and-columns {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 20px;
+    gap: 10px; /* Add gap between search input and button */
+}
+
+.dropdown-button.outlined {
+    border: 2px solid #4CAF50;
+    background-color: transparent;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-button.outlined:hover {
+    background-color: #4CAF50;
+    color: #192229;
 }

@@ -59,32 +59,36 @@ const VirtualHostTable = () => {
 
     return (
         <div className="virtual-host-table-wrapper">
-            <div>
+            <div className="search-and-columns">
                 <input
                     type="text"
                     placeholder="Search..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-
                 />
-                    <button onClick={() => setDropdownOpen(!dropdownOpen)} className="dropdown-button">
-                        Show Columns
-                    </button>
-                    {dropdownOpen && (
-                        <div className="dropdown-content">
-                            {columnOptions.map(option => (
-                                <label key={option.key}>
-                                    <input
-                                        type="checkbox"
-                                        checked={visibleColumns.includes(option.key)}
-                                        onChange={() => toggleColumnVisibility(option.key)}
-                                    />
-                                    {option.label}
-                                </label>
-                            ))}
-                        </div>
-                    )}
+                <div className="dropdown">
+                <button onClick={() => setDropdownOpen(!dropdownOpen)}
+                        className="dropdown-button outlined"
+                        style={{ width: '150px' }}
+                >
+                    Show Columns
+                </button>
+                {dropdownOpen && (
+                    <div className="dropdown-content">
+                        {columnOptions.map(option => (
+                            <label key={option.key}>
+                                <input
+                                    type="checkbox"
+                                    checked={visibleColumns.includes(option.key)}
+                                    onChange={() => toggleColumnVisibility(option.key)}
+                                />
+                                {option.label}
+                            </label>
+                        ))}
+                    </div>
+                )}
                 </div>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -110,7 +114,9 @@ const VirtualHostTable = () => {
                             )}
                             {visibleColumns.includes('actions') && (
                                 <td>
-                                    <button onClick={() => handleRemove(host.id)}>Remove</button>
+                                    <button className="delete-button" onClick={() => handleRemove(host.id)}>
+                                        Delete
+                                    </button>
                                 </td>
                             )}
                         </tr>
