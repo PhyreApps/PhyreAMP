@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { saveVirtualHost, getVirtualHosts, removeVirtualHost } from './database';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
@@ -23,6 +23,7 @@ const createWindow = () => {
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
+
 };
 
 // This method will be called when Electron has finished
@@ -46,6 +47,12 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+ipcMain.on('open-external-url', (event, url) => {
+  shell.openExternal(url, {
+    activate: true,
+  });
 });
 
 ipcMain.handle('select-folder', async () => {

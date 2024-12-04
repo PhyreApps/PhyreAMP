@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 const VirtualHostTable = () => {
     const [virtualHosts, setVirtualHosts] = React.useState([]);
 
@@ -40,9 +39,9 @@ const VirtualHostTable = () => {
                         <td>{host.document_root}</td>
                         <td>{host.php_version}</td>
                         <td>
-                            <a href={`http://${host.local_domain}`} target="_blank" rel="noopener noreferrer">
+                            <button onClick={() => window.electron.openExternal(`http://${host.local_domain}`)}>
                                 {host.local_domain}
-                            </a>
+                            </button>
                         </td>
                         <td>
                             <button onClick={() => handleRemove(host.id)}>Remove</button>
