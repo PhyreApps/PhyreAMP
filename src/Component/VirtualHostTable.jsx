@@ -11,6 +11,17 @@ const VirtualHostTable = () => {
     React.useEffect(() => {
         fetchVirtualHosts();
     }, []);
+    const handleRemove = async (id) => {
+        const confirmDelete = window.confirm("Are you sure you want to remove this virtual host?");
+        if (confirmDelete) {
+            const result = await window.electron.ipcRenderer.invoke('remove-virtual-host', id);
+            if (result.success) {
+                setVirtualHosts(virtualHosts.filter(host => host.id !== id));
+            } else {
+                alert(`Error removing virtual host: ${result.error}`);
+            }
+        }
+    };
     return (
         <table>
             <thead>
@@ -19,6 +30,7 @@ const VirtualHostTable = () => {
                     <th>Document Root</th>
                     <th>PHP Version</th>
                     <th>Local Domain</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,7 +39,14 @@ const VirtualHostTable = () => {
                         <td>{host.name}</td>
                         <td>{host.document_root}</td>
                         <td>{host.php_version}</td>
-                        <td>{host.local_domain}</td>
+                        <td>
+                            <a href={`http://${host.local_domain}`} target="_blank" rel="noopener noreferrer">
+                                {host.local_domain}
+                            </a>
+                        </td>
+                        <td>
+                            <button onClick={() => handleRemove(host.id)}>Remove</button>
+                        </td>
                     </tr>
                 ))}
             </tbody>

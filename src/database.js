@@ -27,6 +27,18 @@ export const getVirtualHosts = () => {
     });
 };
 
+export const removeVirtualHost = (id) => {
+    return new Promise((resolve, reject) => {
+        db.run(`DELETE FROM virtual_hosts WHERE id = ?`, [id], function (err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+};
+
 export const saveVirtualHost = (data) => {
     return new Promise((resolve, reject) => {
         const { name, document_root, php_version, local_domain } = data;

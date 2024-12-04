@@ -1,5 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
-import { saveVirtualHost, getVirtualHosts } from './database';
+import { saveVirtualHost, getVirtualHosts, removeVirtualHost } from './database';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 
@@ -67,6 +67,15 @@ ipcMain.handle('get-virtual-hosts', async () => {
   try {
     const hosts = await getVirtualHosts();
     return hosts;
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('remove-virtual-host', async (event, id) => {
+  try {
+    await removeVirtualHost(id);
+    return { success: true };
   } catch (error) {
     return { success: false, error: error.message };
   }
