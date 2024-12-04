@@ -22,6 +22,7 @@ const DockerControl = () => {
         try {
             await window.electron.ipcRenderer.invoke('start-docker-app');
             alert('Docker app started successfully.');
+            setDockerRunning(true);
         } catch (error) {
             alert(`Error starting Docker app: ${error.message}`);
         }
