@@ -2,13 +2,9 @@ import * as React from 'react';
 import './DockerControl.css';
 
 const DockerControl = () => {
-    const [containerName, setContainerName] = React.useState('');
     const [status, setStatus] = React.useState('');
     const [dockerRunning, setDockerRunning] = React.useState(false);
 
-    const handleInputChange = (e) => {
-        setContainerName(e.target.value);
-    };
 
     const isDockerRunning = async () => {
         try {
@@ -57,7 +53,7 @@ const DockerControl = () => {
                 return;
             }
         }
-        const result = await window.electron.ipcRenderer.invoke(command, containerName);
+        const result = await window.electron.ipcRenderer.invoke(command);
         if (result.success) {
             alert(result.message);
             if (command === 'status-container') {
@@ -70,12 +66,6 @@ const DockerControl = () => {
 
     return (
         <div className="docker-control">
-            <input
-                type="text"
-                placeholder="Enter container name"
-                value={containerName}
-                onChange={handleInputChange}
-            />
             <button onClick={() => executeCommand('start-container')}>Start</button>
             <button onClick={() => executeCommand('stop-container')}>Stop</button>
             <button onClick={() => executeCommand('restart-container')}>Restart</button>
