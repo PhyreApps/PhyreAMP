@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './VirtualHostTable.css';
 const VirtualHostTable = () => {
     const [virtualHosts, setVirtualHosts] = React.useState([]);
 

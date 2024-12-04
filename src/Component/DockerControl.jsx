@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './DockerControl.css';
 
 const DockerControl = () => {
     const [containerName, setContainerName] = React.useState('');
@@ -68,7 +69,7 @@ const DockerControl = () => {
     };
 
     return (
-        <div>
+        <div className="docker-control">
             <input
                 type="text"
                 placeholder="Enter container name"
