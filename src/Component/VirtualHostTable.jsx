@@ -36,7 +36,7 @@ const VirtualHostTable = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [dropdownRef]);
+    }, []);
     const filteredHosts = virtualHosts.filter(host => {
         const regex = new RegExp(searchQuery.split(' ').map(term => `(?=.*${term})`).join(''), 'i');
         return regex.test(`${host.name} ${host.document_root} ${host.php_version} ${host.local_domain}`);
@@ -63,12 +63,11 @@ const VirtualHostTable = () => {
             <div className="search-and-columns">
                 <input
                     type="text"
-                    placeholder="Search..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search..."
                 />
-                <div className="dropdown">
+                <div className="dropdown" ref={dropdownRef}>
                 <button onClick={() => setDropdownOpen(!dropdownOpen)}
                         className="dropdown-button outlined"
                         style={{ width: '150px' }}
