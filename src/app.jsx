@@ -10,7 +10,7 @@ import PhyreXAMPLogo from './Icons/PhyreXAMPLogo.jsx';
 
 const root = createRoot(document.getElementById('app'));
 const App = () => {
-    const [activeTab, setActiveTab] = React.useState('form');
+    const [activeTab, setActiveTab] = React.useState('table');
 
     return (
         <div style={{ padding: '20px' }}>

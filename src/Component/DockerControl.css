@@ -1,11 +1,11 @@
 .docker-control {
+    width: 100%;
     padding: 20px;
+    margin-top: 20px;
     border: 1px solid #192229;
     background-color: #192229;
     border-radius: 8px;
-    margin-top: 20px;
     color: #fff;
-    width: 100%;
 }
 
 .docker-control p {

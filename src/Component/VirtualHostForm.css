@@ -1,11 +1,11 @@
 form {
+    width: 100%;
     padding: 20px;
-    border-radius: 8px;
     margin-top: 20px;
     border: 1px solid #192229;
     background-color: #192229;
+    border-radius: 8px;
     color: #fff;
-    width: 100%;
 }
 
 form div {
@@ -13,9 +13,9 @@ form div {
 }
 
 label {
-    font-weight: bold;
     display: block;
     margin-bottom: 5px;
+    font-weight: bold;
     color: #fff;
 }
 
