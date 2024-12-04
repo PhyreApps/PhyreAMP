@@ -1,4 +1,7 @@
 .docker-control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
     padding: 20px;
     margin-top: 20px;
@@ -6,6 +9,27 @@
     background-color: #192229;
     border-radius: 8px;
     color: #fff;
+}
+
+.docker-control .status {
+    flex: 1;
+}
+
+.docker-control .buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.docker-control .buttons .restart-button {
+    border: none;
+    background-color: transparent;
+    color: #fff;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.docker-control .buttons .restart-button:hover {
+    color: #4CAF50;
 }
 
 .docker-control p {

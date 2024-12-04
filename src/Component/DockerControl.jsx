@@ -66,12 +66,15 @@ const DockerControl = () => {
 
     return (
         <div className="docker-control">
-            {!dockerRunning && <button onClick={() => executeCommand('start-container')}>Start</button>}
-            <button onClick={() => executeCommand('stop-container')}>Stop</button>
-            <button onClick={() => executeCommand('restart-container')}>Restart</button>
-            <button onClick={() => executeCommand('status-container')}>Status</button>
-            <p>Docker Daemon: {dockerRunning ? 'Running' : 'Not Running'}</p>
-            {status && <p>Container Status: {status}</p>}
+            <div className="status">
+                <p>Docker Daemon: {dockerRunning ? 'Running' : 'Not Running'}</p>
+                {status && <p>Container Status: {status}</p>}
+            </div>
+            <div className="buttons">
+                {!dockerRunning && <button onClick={() => executeCommand('start-container')}>Start</button>}
+                <button onClick={() => executeCommand('stop-container')}>Stop</button>
+                <button className="restart-button" onClick={() => executeCommand('restart-container')}>Restart</button>
+            </div>
         </div>
     );
 };
