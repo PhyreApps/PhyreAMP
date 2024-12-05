@@ -124,7 +124,7 @@ const DockerControl = () => {
                 )}
                 {status === 'running' || (dockerRunning) && (
                     <>
-                        <button className="button" onClick={() => executeCommand('stop-all-containers')}>
+                        <button className={`button stop-button ${isStopping ? 'stopping' : ''}`} onClick={() => executeCommand('stop-all-containers')}>
                             {isStopping ? 'Stopping...' : 'Stop'}
                         </button>
                         <button className="restart-button" onClick={() => executeCommand('restart-all-containers')}>
