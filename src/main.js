@@ -333,17 +333,23 @@ ipcMain.handle('status-container', async (event, containerName) => {
 
 ipcMain.handle('all-containers-status', async (event) => {
   try {
-    const httpdStatus = await getHttpdContainerStatus();
-    const mysqlStatus = await getMySQLContainerStatus();
-    const redisStatus = await getRedisContainerStatus();
-    const phpmyadminStatus = await getPhpMyAdminContainerStatus();
+    const [httpdStatus, mysqlStatus, redisStatus, phpmyadminStatus, virtualHosts] = await Promise.all([
+      getHttpdContainerStatus(),
+      getMySQLContainerStatus(),
+      getRedisContainerStatus(),
+      getPhpMyAdminContainerStatus(),
+      getVirtualHosts()
+    ]);
 
-    const virtualHosts = await getVirtualHosts();
-    const phpfpmStatuses = {};
-    for (const host of virtualHosts) {
+    const phpfpmStatuses = await Promise.all(virtualHosts.map(async (host) => {
       const status = await getPhpFpmContainerStatus(host.php_version);
-      phpfpmStatuses[host.php_version] = status.message || 'Unknown';
-    }
+      return { version: host.php_version, message: status.message || 'Unknown' };
+    }));
+
+    const phpfpms = phpfpmStatuses.reduce((acc, { version, message }) => {
+      acc[version] = message;
+      return acc;
+    }, {});
 
     return {
       success: true,
@@ -354,7 +360,7 @@ ipcMain.handle('all-containers-status', async (event) => {
         mysql: mysqlStatus.message || 'Unknown',
         redis: redisStatus.message || 'Unknown',
         phpmyadmin: phpmyadminStatus.message || 'Unknown',
-        phpfpms: phpfpmStatuses
+        phpfpms
       }
     };
   } catch (error) {
