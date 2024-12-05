@@ -54,6 +54,12 @@ const VirtualHostForm = (props) => {
             return;
         }
 
+        if (!formData.project_path) {
+            setIsLoading(false);
+            alert('Please select a project path.');
+            return;
+        }
+
         const existingHosts = await ipcRenderer.invoke('get-virtual-hosts');
         const domainExists = existingHosts.some(host => host.local_domain === formData.local_domain && host.id !== (props.host ? props.host.id : null));
 

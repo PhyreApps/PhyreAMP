@@ -189,8 +189,8 @@ ipcMain.handle('get-virtual-hosts', async () => {
 
 ipcMain.handle('update-virtual-host', async (event, formData) => {
   try {
-    const { id, name, document_root, php_version, local_domain } = formData;
-    await updateVirtualHost(id, { name, document_root, php_version, local_domain });
+    const { id, name, project_path,public_folder, php_version, local_domain } = formData;
+    await updateVirtualHost(id, { name, project_path, public_folder, php_version, local_domain });
     await rebuildVirtualHostContainers();
     return { success: true };
   } catch (error) {

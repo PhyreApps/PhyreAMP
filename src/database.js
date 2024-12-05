@@ -109,10 +109,10 @@ export const saveVirtualHost = (data) => {
 
 export const updateVirtualHost = (id, data) => {
     return new Promise((resolve, reject) => {
-        const { name, document_root, php_version, local_domain, project_path, public_folder } = data;
+        const { name, php_version, local_domain, project_path, public_folder } = data;
         db.run(
-            `UPDATE virtual_hosts SET name = ?, document_root = ?, php_version = ?, local_domain = ?, project_path = ?, public_folder = ? WHERE id = ?`,
-            [name, document_root, php_version, local_domain, project_path, public_folder, id],
+            `UPDATE virtual_hosts SET name = ?, php_version = ?, local_domain = ?, project_path = ?, public_folder = ? WHERE id = ?`,
+            [name, php_version, local_domain, project_path, public_folder, id],
             function (err) {
                 if (err) {
                     reject(err);
