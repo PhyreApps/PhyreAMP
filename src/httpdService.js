@@ -93,7 +93,7 @@ const createHttpdContainer = async () => {
                     binds.push(`${defaultHttpdConf}:/usr/local/apache2/conf/httpd.conf`);
                 }
 
-                const defaultVirtualHostsConf = path.join(apacheDataPath, 'apache/virtualhosts.conf');
+                const defaultVirtualHostsConf = path.join(apacheDataPath, 'virtualhosts.conf');
                 if (fs.existsSync(defaultVirtualHostsConf)) {
                     binds.push(`${defaultVirtualHostsConf}:/usr/local/apache2/conf/virtualhosts.conf`);
                 }
