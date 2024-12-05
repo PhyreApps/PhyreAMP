@@ -80,7 +80,7 @@ const createHttpdContainer = async () => {
                 const settings = await getSettings();
 
                 const virtualHosts = await getVirtualHosts();
-                const binds = virtualHosts.map(host => `${host.document_root}:/var/www/html/${host.local_domain}`);
+                const binds = virtualHosts.map(host => `${host.project_path}:/var/www/html/${host.local_domain}`);
 
                 const defaultHttpdConf = path.join(__dirname, 'apache/httpd.conf');
                 if (fs.existsSync(defaultHttpdConf)) {
