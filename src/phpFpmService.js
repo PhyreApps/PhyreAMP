@@ -77,8 +77,42 @@ const getPhpFpmContainerStatus = async (phpVersion) => {
         return { success: false, error: `Error fetching status for PHP-FPM container for PHP ${phpVersion}: ${error.message}` };
     }
 };
+const startPhpFpmContainer = async (phpVersion) => {
+    try {
+        const containerName = `phyreamp-php${phpVersion.replace('.', '')}-fpm`;
+        const container = docker.getContainer(containerName);
+        await container.start();
+        return { success: true, message: `PHP-FPM container for PHP ${phpVersion} started successfully.` };
+    } catch (error) {
+        return { success: false, error: `Error starting PHP-FPM container for PHP ${phpVersion}: ${error.message}` };
+    }
+};
+
+const stopPhpFpmContainer = async (phpVersion) => {
+    try {
+        const containerName = `phyreamp-php${phpVersion.replace('.', '')}-fpm`;
+        const container = docker.getContainer(containerName);
+        await container.stop();
+        return { success: true, message: `PHP-FPM container for PHP ${phpVersion} stopped successfully.` };
+    } catch (error) {
+        return { success: false, error: `Error stopping PHP-FPM container for PHP ${phpVersion}: ${error.message}` };
+    }
+};
+const restartPhpFpmContainer = async (phpVersion) => {
+    try {
+        const containerName = `phyreamp-php${phpVersion.replace('.', '')}-fpm`;
+        const container = docker.getContainer(containerName);
+        await container.restart();
+        return { success: true, message: `PHP-FPM container for PHP ${phpVersion} restarted successfully.` };
+    } catch (error) {
+        return { success: false, error: `Error restarting PHP-FPM container for PHP ${phpVersion}: ${error.message}` };
+    }
+};
 export {
     createPhpFpmContainer,
+    stopPhpFpmContainer,
+    startPhpFpmContainer,
     deletePhpFpmContainer,
-    getPhpFpmContainerStatus
+    getPhpFpmContainerStatus,
+    restartPhpFpmContainer
 };

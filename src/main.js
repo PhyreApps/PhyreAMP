@@ -12,7 +12,12 @@ import {
   deletePhpMyAdminContainer,
   restartPhpMyAdminContainer
 } from './phpMyAdminService';
-import {getPhpFpmContainerStatus, createPhpFpmContainer, deletePhpFpmContainer} from './phpFpmService';
+import {
+  getPhpFpmContainerStatus,
+  createPhpFpmContainer,
+  deletePhpFpmContainer,
+  stopPhpFpmContainer, restartPhpFpmContainer, startPhpFpmContainer
+} from './phpFpmService';
 import {
   startMySQLContainer,
   stopMySQLContainer,
@@ -236,6 +241,12 @@ ipcMain.handle('start-all-containers', async () => {
     await startMySQLContainer();
     await startRedisContainer();
     await startPhpMyAdminContainer();
+
+    const virtualHosts = await getVirtualHosts();
+    for (const host of virtualHosts) {
+      const start = await startPhpFpmContainer(host.php_version);
+    }
+
     return { success: true, message: 'All containers started successfully.' };
   } catch (error) {
     return { success: false, error: error.message };
@@ -251,7 +262,7 @@ ipcMain.handle('stop-all-containers', async () => {
 
     const virtualHosts = await getVirtualHosts();
     for (const host of virtualHosts) {
-      const status = await stopP(host.php_version);
+      const stop = await stopPhpFpmContainer(host.php_version);
     }
 
     return { success: true, message: 'All containers stopped successfully.' };
@@ -270,6 +281,12 @@ ipcMain.handle('restart-all-containers', async () => {
     await restartMySQLContainer();
     await restartRedisContainer();
     await restartPhpMyAdminContainer();
+
+    const virtualHosts = await getVirtualHosts();
+    for (const host of virtualHosts) {
+      const stop = await restartPhpFpmContainer(host.php_version);
+    }
+
     return { success: true, message: 'All containers restarted successfully.' };
   } catch (error) {
     return { success: false, error: error.message };
