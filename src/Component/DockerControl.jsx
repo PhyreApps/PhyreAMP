@@ -29,10 +29,20 @@ const DockerControl = () => {
             await window.electron.ipcRenderer.invoke('start-docker-app');
         }
 
-        await window.electron.ipcRenderer.invoke('start-all-containers').then(async (log) => {
-            setIsStarting(false);
-            await fetchAllContainersStatuses();
-        });
+        setTimeout(async () => {
+
+            let checkIsDockerUp = await isDockerRunning();
+            if (!checkIsDockerUp) {
+                setIsStarting(false);
+                setStatus('Error starting Docker. Please check Docker Desktop.');
+                return;
+            }
+
+            await window.electron.ipcRenderer.invoke('start-all-containers').then(async (log) => {
+                setIsStarting(false);
+                await fetchAllContainersStatuses();
+            });
+        }, 5000);
 
     };
 
