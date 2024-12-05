@@ -6,6 +6,7 @@ module.exports = {
     asar: true,
     icon: './src/assets/icons/icon.icns',
     arch: "universal",
+    extraResource: ['./docker/apache'],
   },
   rebuildConfig: {},
   publishers: [

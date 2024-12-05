@@ -4,6 +4,11 @@ import { getVirtualHosts } from './database';
 import { app } from 'electron';
 import { addVirtualHostsToHostsFile, removeVirtualHostsFromHostsFile } from './osHostService';
 
+const dockerApachePath =
+    process.env.NODE_ENV === 'development'
+        ? path.join(__dirname, '../../docker/apache')
+        : path.join(process.resourcesPath, 'docker/apache');
+
 const generateHttpdConf = async () => {
 
     const virtualHosts = await getVirtualHosts();
@@ -22,7 +27,7 @@ const generateHttpdConf = async () => {
     }
 
     // Read default HTTPD configuration file
-    const defaultConfigPath = path.join(app.getAppPath(), 'docker/apache/httpd.conf');
+    const defaultConfigPath = path.join(dockerApachePath, 'docker/apache/httpd.conf');
     console.log('defaultConfigPath:', defaultConfigPath);
 
     const defaultConfig = fs.readFileSync(defaultConfigPath, 'utf8');
