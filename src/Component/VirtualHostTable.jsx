@@ -5,14 +5,15 @@ import VirtualHostForm from "./VirtualHostForm.jsx";
 
 const columnOptions = [
     { key: 'application', label: 'Application' },
-    { key: 'document_root', label: 'Document Root' },
+    { key: 'project_path', label: 'Project Path' },
+    { key: 'public_folder', label: 'Public Folder' },
     { key: 'php_version', label: 'PHP Version' },
     { key: 'local_domain', label: 'Local Domain' },
     { key: 'actions', label: 'Actions' }
 ];
 
 const VirtualHostTable = () => {
-    const [visibleColumns, setVisibleColumns] = React.useState(columnOptions.map(col => col.key).filter(key => key !== 'document_root' && key !== 'name'));
+    const [visibleColumns, setVisibleColumns] = React.useState(columnOptions.map(col => col.key).filter(key => key !== 'project_path' && key !== 'public_folder' && key !== 'name'));
     const [virtualHosts, setVirtualHosts] = React.useState([]);
 
     const [searchQuery, setSearchQuery] = React.useState('');
@@ -40,7 +41,7 @@ const VirtualHostTable = () => {
     }, []);
     const filteredHosts = virtualHosts.filter(host => {
         const regex = new RegExp(searchQuery.split(' ').map(term => `(?=.*${term})`).join(''), 'i');
-        return regex.test(`${host.name} ${host.document_root} ${host.php_version} ${host.local_domain}`);
+        return regex.test(`${host.name} ${host.project_path} ${host.public_folder} ${host.php_version} ${host.local_domain}`);
     });
     const handleRemove = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to remove this virtual host?");
@@ -113,7 +114,8 @@ const VirtualHostTable = () => {
                 <thead>
                     <tr>
                         {visibleColumns.includes('application') && <th>Application</th>}
-                        {visibleColumns.includes('document_root') && <th>Document Root</th>}
+                        {visibleColumns.includes('project_path') && <th>Project Path</th>}
+                        {visibleColumns.includes('public_folder') && <th>Public Folder</th>}
                         {visibleColumns.includes('php_version') && <th>PHP Version</th>}
                         {visibleColumns.includes('local_domain') && <th>Local Domain</th>}
                         {visibleColumns.includes('actions') && <th>Actions</th>}
@@ -123,7 +125,8 @@ const VirtualHostTable = () => {
                     {filteredHosts.map((host) => (
                         <tr key={host.id}>
                             {visibleColumns.includes('application') && <td><PHPIcon /></td>}
-                            {visibleColumns.includes('document_root') && <td>{host.document_root}</td>}
+                            {visibleColumns.includes('project_path') && <td>{host.project_path}</td>}
+                            {visibleColumns.includes('public_folder') && <td>{host.public_folder}</td>}
                             {visibleColumns.includes('php_version') && <td> {host.php_version} </td>}
                             {visibleColumns.includes('local_domain') && (
                                 <td>
