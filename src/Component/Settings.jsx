@@ -16,7 +16,8 @@ const Settings = () => {
                         redisPort: '6379',
                         mysqlPort: '3306',
                         httpdPort: '80',
-                        allowedPhpVersions: phpVersions.reduce((acc, version) => ({...acc, [version]: true}), {})
+                        mysqlRootPassword: '',
+                        allowedPhpVersions: phpVersions.reduce((acc, version) => ({...acc, [version]: true}), {}),
                     });
                 }
             } catch (error) {
@@ -45,7 +46,6 @@ const Settings = () => {
             setIsSaving(false);
         }
     };
-
     const [isSaving, setIsSaving] = React.useState(false);
 
     const [isResetting, setIsResetting] = React.useState(false);
@@ -100,19 +100,26 @@ const Settings = () => {
             <div>
                 <label>
                     Redis Port:
-                    <input type="text" name="redisPort" value={settings.redisPort} onChange={handleChange} />
+                    <input type="text" name="redisPort" value={settings.redisPort} onChange={handleChange}/>
                 </label>
             </div>
             <div>
                 <label>
                     MySQL Port:
-                    <input type="text" name="mysqlPort" value={settings.mysqlPort} onChange={handleChange} />
+                    <input type="text" name="mysqlPort" value={settings.mysqlPort} onChange={handleChange}/>
+                </label>
+            </div>
+            <div>
+                <label>
+                    MySQL Root Password:
+                    <input type="text" name="mysqlRootPassword" value={settings.mysqlRootPassword}
+                           onChange={handleChange}/>
                 </label>
             </div>
             <div>
                 <label>
                     HTTPD Port:
-                    <input type="text" name="httpdPort" value={settings.httpdPort} onChange={handleChange} />
+                    <input type="text" name="httpdPort" value={settings.httpdPort} onChange={handleChange}/>
                 </label>
             </div>
             <div>
@@ -135,12 +142,13 @@ const Settings = () => {
                 {isSaving ? 'Saving...' : 'Save Settings'}
             </button>
             {!isResetting && (
-                <button type="button" onClick={resetToDefault} className="button" style={{ marginLeft: '10px' }}>
+                <button type="button" onClick={resetToDefault} className="button" style={{marginLeft: '10px'}}>
                     Reset to Default
                 </button>
             )}
         </form>
     );
-};
+}
+;
 
 export default Settings;

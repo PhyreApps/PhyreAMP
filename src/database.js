@@ -19,6 +19,7 @@ db.serialize(() => {
         redisPort TEXT,
         mysqlPort TEXT,
         httpdPort TEXT,
+        mysqlRootPassword TEXT,
         allowedPhpVersions TEXT
     )`);
 });
@@ -36,11 +37,11 @@ export const getVirtualHosts = () => {
 
 export const saveSettings = (settings) => {
     return new Promise((resolve, reject) => {
-        const { redisPort, mysqlPort, httpdPort, allowedPhpVersions } = settings;
+        const { redisPort, mysqlPort, httpdPort, mysqlRootPassword, allowedPhpVersions } = settings;
         const allowedPhpVersionsString = JSON.stringify(allowedPhpVersions);
         db.run(
-            `INSERT INTO settings (redisPort, mysqlPort, httpdPort, allowedPhpVersions) VALUES (?, ?, ?, ?)`,
-            [redisPort, mysqlPort, httpdPort, allowedPhpVersionsString],
+            `INSERT INTO settings (redisPort, mysqlPort, httpdPort, mysqlRootPassword, allowedPhpVersions) VALUES (?, ?, ?, ?, ?)`,
+            [redisPort, mysqlPort, httpdPort, mysqlRootPassword, allowedPhpVersionsString],
             function (err) {
                 if (err) {
                     reject(err);

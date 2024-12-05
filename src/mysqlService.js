@@ -77,7 +77,7 @@ const createMysqlContainer = async () => {
                     Image: 'mysql:8.0',
                     name: 'phyreamp-mysql',
                     Env: [
-                        'MYSQL_ROOT_PASSWORD=root',
+                        `MYSQL_ROOT_PASSWORD=${settings.mysqlRootPassword || 'root'}`,
                         'MYSQL_DATABASE=phyreamp',
                         'MYSQL_USER=phyreamp',
                         'MYSQL_PASSWORD=phyreamp'
