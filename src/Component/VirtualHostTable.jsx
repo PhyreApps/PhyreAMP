@@ -71,7 +71,10 @@ const VirtualHostTable = () => {
     return (
         <div className="virtual-host-table-wrapper">
             <div>
-                <button  className="button" onClick={openModal}>
+                <button  className="button" onClick={()=> {
+                    setEditingHost(null);
+                    setIsModalOpen(true);
+                }}>
                     Create Virtual Host
                 </button>
                 {isModalOpen && <VirtualHostForm host={editingHost} onClose={closeModal} />}
