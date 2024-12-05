@@ -22,6 +22,16 @@ const stopPhpMyAdminContainer = async () => {
     }
 };
 
+const restartPhpMyAdminContainer = async () => {
+    try {
+        const container = docker.getContainer('phyreamp-phpmyadmin');
+        await container.restart();
+        return { success: true, message: 'phpMyAdmin container restarted successfully.' };
+    } catch (error) {
+        return { success: false, error: `Error restarting phpMyAdmin container: ${error.message}` };
+    }
+};
+
 const getPhpMyAdminContainerStatus = async () => {
     try {
         const container = docker.getContainer('phyreamp-phpmyadmin');
@@ -102,5 +112,6 @@ export {
     stopPhpMyAdminContainer,
     getPhpMyAdminContainerStatus,
     createPhpMyAdminContainer,
-    deletePhpMyAdminContainer
+    deletePhpMyAdminContainer,
+    restartPhpMyAdminContainer
 };

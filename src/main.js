@@ -4,7 +4,14 @@ import { generateHttpdConf } from './virtualHostBuilder';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import { startContainer, stopContainer, restartContainer, getContainerStatus } from './dockerService';
-import { startPhpMyAdminContainer, stopPhpMyAdminContainer, getPhpMyAdminContainerStatus, createPhpMyAdminContainer, deletePhpMyAdminContainer } from './phpMyAdminService';
+import {
+  startPhpMyAdminContainer,
+  stopPhpMyAdminContainer,
+  getPhpMyAdminContainerStatus,
+  createPhpMyAdminContainer,
+  deletePhpMyAdminContainer,
+  restartPhpMyAdminContainer
+} from './phpMyAdminService';
 import {getPhpFpmContainerStatus, createPhpFpmContainer, deletePhpFpmContainer} from './phpFpmService';
 import {
   startMySQLContainer,
@@ -21,7 +28,13 @@ import {
   createRedisContainer,
   deleteRedisContainer
 } from './redisService';
-import {createHttpdContainer, deleteHttpdContainer, getHttpdContainerStatus, startHttpdContainer} from "./httpdService";
+import {
+  createHttpdContainer,
+  deleteHttpdContainer,
+  getHttpdContainerStatus, restartHttpdContainer,
+  startHttpdContainer,
+  stopHttpdContainer
+} from "./httpdService";
 const Docker = require('dockerode');
 const docker = new Docker();
 
@@ -211,6 +224,46 @@ ipcMain.handle('restart-container', async (event, containerName) => {
   try {
     const output = await restartContainer(containerName);
     return { success: true, output };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('start-all-containers', async () => {
+  try {
+    await startHttpdContainer();
+    await startMySQLContainer();
+    await startRedisContainer();
+    await startPhpMyAdminContainer();
+    return { success: true, message: 'All containers started successfully.' };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('stop-all-containers', async () => {
+  try {
+    await stopHttpdContainer();
+    await stopMySQLContainer();
+    await stopRedisContainer();
+    await stopPhpMyAdminContainer();
+    return { success: true, message: 'All containers stopped successfully.' };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+async function restartRedisContainer() {
+
+}
+
+ipcMain.handle('restart-all-containers', async () => {
+  try {
+    await restartHttpdContainer();
+    await restartMySQLContainer();
+    await restartRedisContainer();
+    await restartPhpMyAdminContainer();
+    return { success: true, message: 'All containers restarted successfully.' };
   } catch (error) {
     return { success: false, error: error.message };
   }

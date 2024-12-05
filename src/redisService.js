@@ -92,10 +92,21 @@ const deleteRedisContainer = async () => {
     }
 };
 
+const restartRedisContainer = async () => {
+    try {
+        const container = docker.getContainer('phyreamp-redis');
+        await container.restart();
+        return { success: true, message: 'Redis container restarted successfully.' };
+    } catch (error) {
+        return { success: false, error: `Error restarting Redis container: ${error.message}` };
+    }
+};
+
 export {
     startRedisContainer,
     stopRedisContainer,
     getRedisContainerStatus,
     createRedisContainer,
-    deleteRedisContainer
+    deleteRedisContainer,
+    restartRedisContainer
 };
