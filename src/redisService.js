@@ -68,7 +68,7 @@ const createRedisContainer = async () => {
                     HostConfig: {
                         NetworkMode: 'phyreamp-network',
                         PortBindings: {
-                            '6379/tcp': [{ HostPort: settings.redisPort || '6379' }]
+                            '6379/tcp': [{ HostPort: (settings.redisPort || '6379').toString() }]
                         }
                     }
                 });

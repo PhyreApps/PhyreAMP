@@ -80,7 +80,7 @@ const createHttpdContainer = async () => {
                     HostConfig: {
                         NetworkMode: 'phyreamp-network',
                         PortBindings: {
-                            '80/tcp': [{ HostPort: settings.httpdPort || '80' }]
+                            '80/tcp': [{ HostPort: (settings.httpdPort || '80').toString() }]
                         },
                         Binds: [
                         //    path.resolve(__dirname, '../docker/html') + ':/var/www/html',

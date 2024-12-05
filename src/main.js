@@ -5,7 +5,7 @@ import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import { startContainer, stopContainer, restartContainer, getContainerStatus } from './dockerService';
 import { startPhpMyAdminContainer, stopPhpMyAdminContainer, getPhpMyAdminContainerStatus, createPhpMyAdminContainer, deletePhpMyAdminContainer } from './phpMyAdminService';
-import { getPhpFpmContainerStatus } from './phpFpmService';
+import {getPhpFpmContainerStatus, createPhpFpmContainer, deletePhpFpmContainer} from './phpFpmService';
 import {
   startMySQLContainer,
   stopMySQLContainer,
@@ -244,15 +244,31 @@ ipcMain.handle('rebuild-containers', async (event) => {
     startRedisContainer();
   });
 
+  const virtualHosts = await getVirtualHosts();
+  const phpVersions = [...new Set(virtualHosts.map(host => host.php_version))];
+
+  console.log(virtualHosts);
+  console.log(phpVersions);
+
+  for (const phpVersion of phpVersions) {
+    await deletePhpFpmContainer(phpVersion).then((log) => {
+        console.log(log);
+    });
+    await createPhpFpmContainer(phpVersion).then((log) => {
+        console.log(log);
+    });
+  }
+
+  await createMysqlContainer();
+
   await deleteHttpdContainer();
-  await createHttpdContainer().then((log) => {
+  return await createHttpdContainer().then((log) => {
     console.log(log);
     startHttpdContainer();
   });
 
-  await deleteMysqlContainer();
+  return { success: true };
 
-  return await createMysqlContainer();
 
 })
 
