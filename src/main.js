@@ -35,6 +35,7 @@ import {
   startHttpdContainer,
   stopHttpdContainer
 } from "./httpdService";
+import * as http from "node:http";
 const Docker = require('dockerode');
 const docker = new Docker();
 
@@ -296,10 +297,35 @@ ipcMain.handle('status-container', async (event, containerName) => {
 });
 
 ipcMain.handle('all-containers-status', async (event) => {
+  try {
+    const httpdStatus = await getHttpdContainerStatus();
+    const mysqlStatus = await getMySQLContainerStatus();
+    const redisStatus = await getRedisContainerStatus();
+    const phpmyadminStatus = await getPhpMyAdminContainerStatus();
 
-    return await getMySQLContainerStatus();
+    const virtualHosts = await getVirtualHosts();
+    const phpfpmStatuses = {};
+    for (const host of virtualHosts) {
+      const status = await getPhpFpmContainerStatus(host.php_version);
+      phpfpmStatuses[host.php_version] = status.message || 'Unknown';
+    }
 
-})
+    return {
+      success: true,
+      message: 'Container statuses fetched successfully.',
+      status: (httpdStatus.success && mysqlStatus.success),
+      statuses: {
+        httpd: httpdStatus.message || 'Unknown',
+        mysql: mysqlStatus.message || 'Unknown',
+        redis: redisStatus.message || 'Unknown',
+        phpmyadmin: phpmyadminStatus.message || 'Unknown',
+        phpfpms: phpfpmStatuses
+      }
+    };
+  } catch (error) {
+    return { success: false, error: `Error fetching container statuses: ${error.message}` };
+  }
+});
 
 ipcMain.handle('rebuild-containers', async (event) => {
 
