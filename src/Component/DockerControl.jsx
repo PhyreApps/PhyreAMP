@@ -34,6 +34,14 @@ const DockerControl = () => {
         await fetchAllContainersStatuses();
     };
 
+    const stopApp = async () => {
+        setIsStopping(true);
+        await window.electron.ipcRenderer.invoke('stop-all-containers');
+        setIsStopping(false);
+
+        await fetchAllContainersStatuses();
+    };
+
     const statusApp = async () => {
         await fetchAllContainersStatuses();
     }
@@ -102,8 +110,8 @@ const DockerControl = () => {
                 {status === 'Running' && (
                     <>
                         <button className={`button stop-button ${isStopping ? 'stopping' : ''}`}
-                                onClick={() => {
-
+                                onClick={async() => {
+                                  await stopApp();
                                 }}>
                             {isStopping ? 'Stopping...' : 'Stop'}
                         </button>
