@@ -10,7 +10,10 @@ const Settings = () => {
             try {
                 const result = await window.electron.ipcRenderer.invoke('get-settings');
                 if (result.success && result.settings) {
-                    setSettings(result.settings);
+                    setSettings({
+                        ...result.settings,
+                        allowedPhpVersions: result.settings.allowedPhpVersions || phpVersions.reduce((acc, version) => ({...acc, [version]: true}), {}),
+                    });
                 } else {
                     setSettings({
                         redisPort: '6379',

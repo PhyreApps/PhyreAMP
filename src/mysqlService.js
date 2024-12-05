@@ -85,7 +85,7 @@ const createMysqlContainer = async () => {
                     HostConfig: {
                         NetworkMode: 'phyreamp-network',
                         PortBindings: {
-                            '3306/tcp': [{ HostPort: settings.mysqlPort || '3306' }]
+                            '3306/tcp': [{ HostPort: (settings.mysqlPort || '3306').toString() }]
                         },
                         Binds: [path.resolve(__dirname, '../docker/mysql-data') + ':/var/lib/mysql']
                     }

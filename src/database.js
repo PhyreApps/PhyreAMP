@@ -3,7 +3,7 @@ import { generateHttpdConf } from './virtualHostBuilder';
 import path from 'node:path';
 import sqlite3 from 'sqlite3';
 
-const dbPath = path.join(app.getPath('userData'), 'virtual_hosts.db');
+const dbPath = path.join(app.getPath('userData'), 'phyreamp-1.db');
 const db = new sqlite3.Database(dbPath);
 
 db.serialize(() => {
@@ -15,12 +15,8 @@ db.serialize(() => {
         local_domain TEXT NOT NULL
     )`);
     db.run(`CREATE TABLE IF NOT EXISTS settings (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        redisPort TEXT,
-        mysqlPort TEXT,
-        httpdPort TEXT,
-        mysqlRootPassword TEXT,
-        allowedPhpVersions TEXT
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
     )`);
 });
 export const getVirtualHosts = () => {
@@ -37,32 +33,43 @@ export const getVirtualHosts = () => {
 
 export const saveSettings = (settings) => {
     return new Promise((resolve, reject) => {
-        const { redisPort, mysqlPort, httpdPort, mysqlRootPassword, allowedPhpVersions } = settings;
-        const allowedPhpVersionsString = JSON.stringify(allowedPhpVersions);
-        db.run(
-            `INSERT INTO settings (redisPort, mysqlPort, httpdPort, mysqlRootPassword, allowedPhpVersions) VALUES (?, ?, ?, ?, ?)`,
-            [redisPort, mysqlPort, httpdPort, mysqlRootPassword, allowedPhpVersionsString],
-            function (err) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve({ success: true });
-                }
-            }
-        );
+        const queries = Object.entries(settings).map(([key, value]) => {
+            return new Promise((resolve, reject) => {
+                db.run(
+                    `INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)`,
+                    [key, typeof value === 'object' ? JSON.stringify(value) : value],
+                    function (err) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                    }
+                );
+            });
+        });
+
+        Promise.all(queries)
+            .then(() => resolve({ success: true }))
+            .catch(reject);
     });
 };
 
 export const getSettings = () => {
     return new Promise((resolve, reject) => {
-        db.get(`SELECT * FROM settings ORDER BY id DESC LIMIT 1`, (err, row) => {
+        db.all(`SELECT * FROM settings`, (err, rows) => {
             if (err) {
                 reject(err);
             } else {
-                if (row) {
-                    row.allowedPhpVersions = JSON.parse(row.allowedPhpVersions);
-                }
-                resolve(row);
+                const settings = {};
+                rows.forEach(({ key, value }) => {
+                    try {
+                        settings[key] = JSON.parse(value);
+                    } catch {
+                        settings[key] = value;
+                    }
+                });
+                resolve(settings);
             }
         });
     });
