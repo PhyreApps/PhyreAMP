@@ -4,7 +4,6 @@ import './ServiceStatus.css';
 const ServiceStatus = () => {
 
     const [settings, setSettings] = React.useState({});
-    const [virtualHosts, setVirtualHosts] = React.useState([]);
     const [statuses, setStatuses] = React.useState({
         httpd: '',
         mysql: '',
@@ -28,14 +27,15 @@ const ServiceStatus = () => {
         const fetchVirtualHosts = async () => {
             try {
                 const hosts = await window.electron.ipcRenderer.invoke('get-virtual-hosts');
-                setVirtualHosts(hosts);
+                return hosts;
             } catch (error) {
                 console.error('Error fetching virtual hosts:', error);
+                return [];
             }
         };
 
         const fetchContainerStatuses = async () => {
-            await fetchVirtualHosts();
+            let virtualHosts = await fetchVirtualHosts();
             await fetchSettings();
             const httpdStatus = await window.electron.ipcRenderer.invoke('status-container', 'phyreamp-httpd') || {};
             const mysqlStatus = await window.electron.ipcRenderer.invoke('status-container', 'phyreamp-mysql') || {};
@@ -57,7 +57,7 @@ const ServiceStatus = () => {
         };
 
         fetchContainerStatuses();
-    }, [virtualHosts]);
+    }, []);
 
     return (
         <div className="service-status">
