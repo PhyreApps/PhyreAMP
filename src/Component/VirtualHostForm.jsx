@@ -53,9 +53,11 @@ const VirtualHostForm = () => {
         }
         const result = await ipcRenderer.invoke('save-virtual-host', formData);
         if (result.success) {
+            await window.electron.ipcRenderer.invoke('window-reload');
             alert('Virtual host saved successfully!');
-            setIsLoading(false);
+        } else {
             alert(`Error saving virtual host: ${result.error}`);
+            setIsLoading(false);
         }
     };
 
