@@ -244,6 +244,12 @@ ipcMain.handle('rebuild-containers', async (event) => {
     startRedisContainer();
   });
 
+  await rebuildVirtualHostContainers();
+
+})
+
+async function rebuildVirtualHostContainers()
+{
   const virtualHosts = await getVirtualHosts();
   const phpVersions = [...new Set(virtualHosts.map(host => host.php_version))];
 
@@ -252,10 +258,10 @@ ipcMain.handle('rebuild-containers', async (event) => {
 
   for (const phpVersion of phpVersions) {
     await deletePhpFpmContainer(phpVersion).then((log) => {
-        console.log(log);
+      console.log(log);
     });
     await createPhpFpmContainer(phpVersion).then((log) => {
-        console.log(log);
+      console.log(log);
     });
   }
 
@@ -268,9 +274,12 @@ ipcMain.handle('rebuild-containers', async (event) => {
 
     return { success: true, message: 'Containers rebuilt successfully.' };
   });
+}
 
 
-})
+ipcMain.handle('rebuild-virtualhost-containers', async (event) => {
+    return await rebuildVirtualHostContainers();
+});
 
 console.log('👋 This message is being logged by "main.js"');
 
