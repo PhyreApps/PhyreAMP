@@ -3,8 +3,20 @@ import path from 'path';
 import { getVirtualHosts } from './database';
 import { app } from 'electron';
 import { addVirtualHostsToHostsFile, removeVirtualHostsFromHostsFile } from './osHostService';
+var sudo = require('sudo-prompt');
 
 const generateHttpdConf = async () => {
+
+    var options = {
+        name: 'PhyreAMP',
+        // icns: '/Applications/Electron.app/Contents/Resources/Electron.icns', // (optional)
+    };
+    sudo.exec('echo hello', options,
+        function(error, stdout, stderr) {
+            if (error) throw error;
+            console.log('stdout: ' + stdout);
+        }
+    );
 
     // Apache working directory
     const apacheDir = path.join(__dirname, 'apache');
