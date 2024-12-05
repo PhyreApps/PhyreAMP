@@ -2,7 +2,7 @@ import * as React from 'react';
 import './DockerControl.css';
 
 const DockerControl = () => {
-    const [status, setStatus] = React.useState('Not running');
+    const [status, setStatus] = React.useState('Stopped');
     const [httpdPort, setHttpdPort] = React.useState('80');
     const [isStopping, setIsStopping] = React.useState(false);
     const [isRestarting, setIsRestarting] = React.useState(false);
@@ -24,12 +24,19 @@ const DockerControl = () => {
 
         await fetchSettings();
 
-        await window.electron.ipcRenderer.invoke('start-docker-app');
+        const isDockerUp = await isDockerRunning();
+        if (!isDockerUp) {
+            await window.electron.ipcRenderer.invoke('start-docker-app');
+        }
         await window.electron.ipcRenderer.invoke('start-all-containers');
         setIsStarting(false);
 
         await fetchAllContainersStatuses();
     };
+
+    const statusApp = async () => {
+        await fetchAllContainersStatuses();
+    }
 
     const fetchSettings = async () => {
         try {
@@ -50,6 +57,10 @@ const DockerControl = () => {
             setStatus(`Error fetching Docker status: ${result.error}`);
         }
     };
+
+    React.useEffect(() => {
+         statusApp();
+    },[]);
 
     return (
         <div className="docker-control">
@@ -80,7 +91,7 @@ const DockerControl = () => {
             </div>
             <div className="buttons">
 
-                {status === 'Not running' && (
+                {status === 'Stopped' && (
                     <button className="button start-button" onClick={async()=> {
                         await startApp();
                     }}>
