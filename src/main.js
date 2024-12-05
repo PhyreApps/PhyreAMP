@@ -5,6 +5,7 @@ import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import { startContainer, stopContainer, restartContainer, getContainerStatus } from './dockerService';
 import { startPhpMyAdminContainer, stopPhpMyAdminContainer, getPhpMyAdminContainerStatus, createPhpMyAdminContainer, deletePhpMyAdminContainer } from './phpMyAdminService';
+import { getPhpFpmContainerStatus } from './phpFpmService';
 import {
   startMySQLContainer,
   stopMySQLContainer,
@@ -57,6 +58,10 @@ app.whenReady().then(() => {
       createWindow();
     }
   });
+});
+
+ipcMain.handle('phpfpm-container-status', async (event, phpVersion) => {
+  return await getPhpFpmContainerStatus(phpVersion);
 });
 
 ipcMain.handle('window-reload', async () => {

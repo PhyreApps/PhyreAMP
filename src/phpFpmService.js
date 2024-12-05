@@ -63,7 +63,18 @@ const deletePhpFpmContainer = async (phpVersion) => {
     }
 };
 
+const getPhpFpmContainerStatus = async (phpVersion) => {
+    try {
+        const containerName = `phyreamp-php${phpVersion.replace('.', '')}-fpm`;
+        const container = docker.getContainer(containerName);
+        const data = await container.inspect();
+        return { success: true, message: `PHP-FPM container for PHP ${phpVersion} is ${data.State.Status}.` };
+    } catch (error) {
+        return { success: false, error: `Error fetching status for PHP-FPM container for PHP ${phpVersion}: ${error.message}` };
+    }
+};
 export {
     createPhpFpmContainer,
-    deletePhpFpmContainer
+    deletePhpFpmContainer,
+    getPhpFpmContainerStatus
 };
