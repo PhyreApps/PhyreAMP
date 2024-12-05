@@ -38,8 +38,8 @@ const generateHttpdConf = async () => {
             configContent += `
 <VirtualHost *:80>
     ServerName ${host.local_domain}
-    DocumentRoot "/var/www/html/${host.local_domain}/"
-    <Directory "/var/www/html/${host.local_domain}/">
+    DocumentRoot "${host.project_path}/${host.public_folder}"
+    <Directory "${host.project_path}/${host.public_folder}">
     
         <FilesMatch ".+\\.ph(ar|p|tml)$">
             SetHandler "proxy:fcgi://phyreamp-php${host.php_version.replace('.', '')}-fpm:9000"

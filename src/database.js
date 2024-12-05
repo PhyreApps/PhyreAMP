@@ -3,16 +3,18 @@ import { generateHttpdConf } from './virtualHostBuilder';
 import path from 'node:path';
 import sqlite3 from 'sqlite3';
 
-const dbPath = path.join(app.getPath('userData'), 'phyreamp.db');
+const dbPath = path.join(app.getPath('userData'), 'phyre-amp.db');
 const db = new sqlite3.Database(dbPath);
 
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS virtual_hosts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        document_root TEXT NOT NULL,
+        document_root TEXT,
         php_version TEXT NOT NULL,
-        local_domain TEXT NOT NULL
+        local_domain TEXT NOT NULL,
+        project_path TEXT NOT NULL,
+        public_folder TEXT NOT NULL
     )`);
     db.run(`CREATE TABLE IF NOT EXISTS settings (
         key TEXT PRIMARY KEY,
@@ -89,10 +91,10 @@ export const removeVirtualHost = (id) => {
 
 export const saveVirtualHost = (data) => {
     return new Promise((resolve, reject) => {
-        const { name, document_root, php_version, local_domain } = data;
+        const { name, document_root, php_version, local_domain, project_path, public_folder } = data;
         db.run(
-            `INSERT INTO virtual_hosts (name, document_root, php_version, local_domain) VALUES (?, ?, ?, ?)`,
-            [name, document_root, php_version, local_domain],
+            `INSERT INTO virtual_hosts (name, document_root, php_version, local_domain, project_path, public_folder) VALUES (?, ?, ?, ?, ?, ?)`,
+            [name, document_root, php_version, local_domain, project_path, public_folder],
             function (err) {
                 if (err) {
                     reject(err);
@@ -107,10 +109,10 @@ export const saveVirtualHost = (data) => {
 
 export const updateVirtualHost = (id, data) => {
     return new Promise((resolve, reject) => {
-        const { name, document_root, php_version, local_domain } = data;
+        const { name, document_root, php_version, local_domain, project_path, public_folder } = data;
         db.run(
-            `UPDATE virtual_hosts SET name = ?, document_root = ?, php_version = ?, local_domain = ? WHERE id = ?`,
-            [name, document_root, php_version, local_domain, id],
+            `UPDATE virtual_hosts SET name = ?, document_root = ?, php_version = ?, local_domain = ?, project_path = ?, public_folder = ? WHERE id = ?`,
+            [name, document_root, php_version, local_domain, project_path, public_folder, id],
             function (err) {
                 if (err) {
                     reject(err);
