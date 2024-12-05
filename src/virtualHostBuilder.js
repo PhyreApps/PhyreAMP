@@ -40,6 +40,11 @@ const generateHttpdConf = async () => {
     ServerName ${host.local_domain}
     DocumentRoot "/var/www/html/${host.local_domain}/"
     <Directory "/var/www/html/${host.local_domain}/">
+    
+        <FilesMatch ".+\\.ph(ar|p|tml)$">
+            SetHandler "proxy:fcgi://phyreamp-php${host.php_version.replace('.', '')}-fpm:9000"
+        </FilesMatch>
+    
         AllowOverride All
         Require all granted
     </Directory> 
