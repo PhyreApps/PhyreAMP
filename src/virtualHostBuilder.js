@@ -42,11 +42,17 @@ const generateHttpdConf = async () => {
         let configContent = '';
 
         virtualHosts.forEach(host => {
+
+            let publicFolder = host.public_folder;
+            if (publicFolder === '/') {
+                publicFolder = '';
+            }
+
             configContent += `
 <VirtualHost *:80>
     ServerName ${host.local_domain}
-    DocumentRoot "/var/www/html/${host.local_domain}/${host.public_folder}"
-    <Directory "/var/www/html/${host.local_domain}/${host.public_folder}">
+    DocumentRoot "/var/www/html/${host.local_domain}/${publicFolder}"
+    <Directory "/var/www/html/${host.local_domain}/${publicFolder}">
     
         <FilesMatch ".+\\.ph(ar|p|tml)$"> 
             SetHandler "proxy:fcgi://phyreamp-php${host.php_version.replace('.', '')}-fpm:9000"
