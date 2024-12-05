@@ -1,0 +1,21 @@
+.service-status {
+    padding: 20px;
+    margin-top: 20px;
+    border: 1px solid #192229;
+    background-color: #192229;
+    border-radius: 8px;
+    color: #fff;
+}
+
+.service-status div {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.status-success {
+    color: #4CAF50; /* Green color for success */
+}
+
+.status-failure {
+    color: #f44336; /* Red color for failure */
+}

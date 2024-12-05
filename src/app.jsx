@@ -36,7 +36,7 @@ const App = () => {
                     Create Virtual Host
                 </button>
                 <button onClick={() => setActiveTab('services')} className={activeTab === 'services' ? 'active' : 'inactive'}>
-                    Services Statuses
+                    Service Statuses
                 </button>
                 <button onClick={() => setActiveTab('settings')}
                         className={activeTab === 'settings' ? 'active' : 'inactive'}>
