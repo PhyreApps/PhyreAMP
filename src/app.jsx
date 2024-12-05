@@ -18,7 +18,7 @@ const App = () => {
             <div style={{
                 display: 'flex',
                 justifyContent: 'center',
-                marginBottom: '20px',
+                marginBottom: '30px',
             }}>
                 <PhyreAMPLogo/>
             </div>

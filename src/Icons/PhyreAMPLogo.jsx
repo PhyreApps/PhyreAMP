@@ -2,9 +2,9 @@ import * as React from "react"
 const PhyreAMPLogo = (props) => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
-        width={458}
-        height={95}
+        width={258}
         fill="none"
+        viewBox="0 0 458 95"
         {...props}
     >
         <path
@@ -28,8 +28,8 @@ const PhyreAMPLogo = (props) => (
                 y2={15.471}
                 gradientUnits="userSpaceOnUse"
             >
-                <stop offset={0.684} stopColor="#F2A231" />
-                <stop offset={1} stopColor="#F95320" />
+                <stop offset={0.684} stopColor="#F2A231"/>
+                <stop offset={1} stopColor="#F95320"/>
             </linearGradient>
             <linearGradient
                 id="b"
@@ -39,8 +39,8 @@ const PhyreAMPLogo = (props) => (
                 y2={101.29}
                 gradientUnits="userSpaceOnUse"
             >
-                <stop stopColor="#F2A231" />
-                <stop offset={1} stopColor="#F95320" />
+                <stop stopColor="#F2A231"/>
+                <stop offset={1} stopColor="#F95320"/>
             </linearGradient>
             <linearGradient
                 id="c"
@@ -50,8 +50,8 @@ const PhyreAMPLogo = (props) => (
                 y2={101.29}
                 gradientUnits="userSpaceOnUse"
             >
-                <stop stopColor="#F2A231" />
-                <stop offset={1} stopColor="#F95320" />
+                <stop stopColor="#F2A231"/>
+                <stop offset={1} stopColor="#F95320"/>
             </linearGradient>
         </defs>
     </svg>
