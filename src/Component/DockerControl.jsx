@@ -42,6 +42,14 @@ const DockerControl = () => {
         await fetchAllContainersStatuses();
     };
 
+    const restartApp = async () => {
+        setIsRestarting(true);
+        await window.electron.ipcRenderer.invoke('restart-all-containers');
+        setIsRestarting(false);
+
+        await fetchAllContainersStatuses();
+    }
+
     const statusApp = async () => {
         await fetchAllContainersStatuses();
     }
@@ -115,8 +123,8 @@ const DockerControl = () => {
                                 }}>
                             {isStopping ? 'Stopping...' : 'Stop'}
                         </button>
-                        <button className="restart-button" onClick={() => {
-
+                        <button className="restart-button" onClick={async() => {
+                            await restartApp();
                         }}>
                             {isRestarting ? 'Restarting...' : 'Restart'}
                         </button>
