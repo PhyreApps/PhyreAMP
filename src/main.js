@@ -13,6 +13,13 @@ import {
   createMysqlContainer, deleteMysqlContainer
 } from './mysqlService';
 import { exec } from 'child_process';
+import {
+  startRedisContainer,
+  stopRedisContainer,
+  getRedisContainerStatus,
+  createRedisContainer,
+  deleteRedisContainer
+} from './redisService';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -199,7 +206,14 @@ ipcMain.handle('rebuild-containers', async (event) => {
   await deletePhpMyAdminContainer();
   await createPhpMyAdminContainer();
 
+  await deleteRedisContainer();
+  await createRedisContainer().then((log) => {
+    console.log(log);
+    startRedisContainer();
+  });
+
   await deleteMysqlContainer();
+
   return await createMysqlContainer();
 
 })
