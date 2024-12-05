@@ -20,6 +20,7 @@ import {
   createRedisContainer,
   deleteRedisContainer
 } from './redisService';
+import {createHttpdContainer, deleteHttpdContainer, startHttpdContainer} from "./httpdService";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -210,6 +211,12 @@ ipcMain.handle('rebuild-containers', async (event) => {
   await createRedisContainer().then((log) => {
     console.log(log);
     startRedisContainer();
+  });
+
+  await deleteHttpdContainer();
+  await createHttpdContainer().then((log) => {
+    console.log(log);
+    startHttpdContainer();
   });
 
   await deleteMysqlContainer();
