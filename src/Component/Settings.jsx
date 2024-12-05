@@ -9,7 +9,7 @@ const Settings = () => {
         const fetchSettings = async () => {
             try {
                 const result = await window.electron.ipcRenderer.invoke('get-settings');
-                if (result.success && result.settings) {
+                if (result.success && result.settings && result.settings.httpdPort) {
                     setSettings({
                         ...result.settings,
                         allowedPhpVersions: result.settings.allowedPhpVersions || phpVersions.reduce((acc, version) => ({...acc, [version]: true}), {}),

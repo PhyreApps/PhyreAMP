@@ -3,7 +3,7 @@ import { generateHttpdConf } from './virtualHostBuilder';
 import path from 'node:path';
 import sqlite3 from 'sqlite3';
 
-const dbPath = path.join(app.getPath('userData'), 'phyreamp-1.db');
+const dbPath = path.join(app.getPath('userData'), 'phyreamp.db');
 const db = new sqlite3.Database(dbPath);
 
 db.serialize(() => {
