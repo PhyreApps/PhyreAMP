@@ -37,7 +37,10 @@ const getMySQLContainerStatus = async () => {
     try {
         const container = docker.getContainer('phyreamp-mysql');
         const data = await container.inspect();
-        return { success: true, message: `Running` };
+        if (data.State.Running) {
+            return { success: true, message: `Running` };
+        }
+        return { success: true, message: `Stopped` };
     } catch (error) {
         return { success: false, error: `Error fetching status for MySQL container: ${error.message}` };
     }

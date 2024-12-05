@@ -85,10 +85,10 @@ const DockerControl = () => {
                 result = await window.electron.ipcRenderer.invoke(command);
             }
             if (result && result.success) {
-                alert(result.message);
-                if (command === 'all-containers-status') {
-                    setStatus(result.message);
-                }
+                // alert(result.message);
+                // if (command === 'all-containers-status') {
+                //     setStatus(result.message);
+                // }
             } else {
                 alert(`Error executing ${command}: ${result.error}`);
             }
@@ -101,40 +101,52 @@ const DockerControl = () => {
         <div className="docker-control">
             <div className="status">
 
-                {dockerRunning ? <>
-                    <div style={
-                        {
-                            display: 'flex',
-                            flexDirection: 'column',
-                            marginTop: '10px',
-                            gap: '5px',
+
+                        {status === 'Running' ? <div>
+
+                                        <div style={
+                                            {
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                marginTop: '10px',
+                                                gap: '5px',
+                                            }
+                                        }>
+                                        <a onClick={() => window.electron.openExternal(`http://localhost${httpdPort === '8000' ? '' : `:${httpdPort}`}`)}
+                                           target="_blank">Running on http://localhost{httpdPort === '8000' ? '' : `:${httpdPort}`}</a>
+                                        <a onClick={() => window.electron.openExternal(`http://localhost:8081`)} target="_blank">Open
+                                            PhpMyAdmin</a>
+
+                                    </div>
+                            </div>
+                                : <div>{status}</div>
+
                         }
-                    }>
-                        <a onClick={() => window.electron.openExternal(`http://localhost${httpdPort === '8000' ? '' : `:${httpdPort}`}`)} target="_blank">Running on http://localhost{httpdPort === '8000' ? '' : `:${httpdPort}`}</a>
-                        <a onClick={() => window.electron.openExternal(`http://localhost:8081`)} target="_blank">Open PhpMyAdmin</a>
-                    </div></> : <div>Docker is not running.</div>
-                }
 
-            </div>
-            <div className="buttons">
-                {!dockerRunning && !isStopping && !isRestarting && (
-                    <button className="button" onClick={() => executeCommand('start-all-containers')}>
-                        {isStopping ? 'Stopping...' : isRestarting ? 'Restarting...' : 'Start'}
-                    </button>
-                )}
-                {status === 'running' || (dockerRunning) && (
-                    <>
-                        <button className={`button stop-button ${isStopping ? 'stopping' : ''}`} onClick={() => executeCommand('stop-all-containers')}>
-                            {isStopping ? 'Stopping...' : 'Stop'}
-                        </button>
-                        <button className="restart-button" onClick={() => executeCommand('restart-all-containers')}>
-                            {isRestarting ? 'Restarting...' : 'Restart'}
-                        </button>
-                    </>
-                )}
-            </div>
-        </div>
-    );
-};
+                        {dockerRunning ? <> </> : <div>Docker is not running.</div>
+                        }
 
-export default DockerControl;
+                </div>
+                <div className="buttons">
+                    {!dockerRunning && !isStopping && !isRestarting && (
+                        <button className="button" onClick={() => executeCommand('start-all-containers')}>
+                            {isStopping ? 'Stopping...' : isRestarting ? 'Restarting...' : 'Start'}
+                        </button>
+                    )}
+                    {status === 'running' || (dockerRunning) && (
+                        <>
+                            <button className={`button stop-button ${isStopping ? 'stopping' : ''}`}
+                                    onClick={() => executeCommand('stop-all-containers')}>
+                                {isStopping ? 'Stopping...' : 'Stop'}
+                            </button>
+                            <button className="restart-button" onClick={() => executeCommand('restart-all-containers')}>
+                                {isRestarting ? 'Restarting...' : 'Restart'}
+                            </button>
+                        </>
+                    )}
+                </div>
+            </div>
+            );
+            };
+
+            export default DockerControl;
