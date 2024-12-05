@@ -53,6 +53,15 @@ const VirtualHostForm = (props) => {
             alert('Please enter a valid domain format.');
             return;
         }
+
+        const existingHosts = await ipcRenderer.invoke('get-virtual-hosts');
+        const domainExists = existingHosts.some(host => host.local_domain === formData.local_domain && host.id !== (props.host ? props.host.id : null));
+
+        if (domainExists) {
+            setIsLoading(false);
+            alert('The local domain already exists. Please choose a different domain.');
+            return;
+        }
         const result = props.host
             ? await ipcRenderer.invoke('update-virtual-host', { ...formData, id: props.host.id })
             : await ipcRenderer.invoke('save-virtual-host', formData);
