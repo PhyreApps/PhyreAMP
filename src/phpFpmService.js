@@ -40,7 +40,7 @@ const createPhpFpmContainer = async (phpVersion) => {
                     .map(host => `${host.project_path}:/var/www/html/${host.local_domain}`);
 
                 const secondBinds = virtualHosts
-                    .filter(host => host.php_version === phpVersion)
+                    .filter(host => host.php_version === phpVersion && host.public_folder !== '/')
                     .map(host => `${host.project_path}/${host.public_folder}:/var/www/html/${host.local_domain}/${host.public_folder}`);
 
                 // merge two binds
