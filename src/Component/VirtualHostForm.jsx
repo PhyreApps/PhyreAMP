@@ -68,6 +68,14 @@ const VirtualHostForm = (props) => {
             alert('The local domain already exists. Please choose a different domain.');
             return;
         }
+        const pathExists = existingHosts.some(host => host.project_path === formData.project_path && host.id !== (props.host ? props.host.id : null));
+
+        if (pathExists) {
+            setIsLoading(false);
+            alert('The project path already exists. Please choose a different path.');
+            return;
+        }
+
         const result = props.host
             ? await ipcRenderer.invoke('update-virtual-host', { ...formData, id: props.host.id })
             : await ipcRenderer.invoke('save-virtual-host', formData);
