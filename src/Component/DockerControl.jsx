@@ -101,7 +101,7 @@ const DockerControl = () => {
                             gap: '5px',
                         }
                     }>
-                        <a onClick={() => window.electron.openExternal(`http://localhost:${httpdPort}`)} target="_blank">Running on http://localhost:{httpdPort}</a>
+                        <a onClick={() => window.electron.openExternal(`http://localhost${httpdPort === '8000' ? '' : `:${httpdPort}`}`)} target="_blank">Running on http://localhost{httpdPort === '8000' ? '' : `:${httpdPort}`}</a>
                         <a onClick={() => window.electron.openExternal(`http://localhost:8081`)} target="_blank">Open PhpMyAdmin</a>
                     </div></> : <div>Docker is not running.</div>
                 }
