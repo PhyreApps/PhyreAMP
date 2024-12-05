@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { getVirtualHosts } from './database';
 import { app } from 'electron';
+import { addVirtualHostsToHostsFile, removeVirtualHostsFromHostsFile } from './osHostService';
 
 const generateHttpdConf = async () => {
 
@@ -25,6 +26,12 @@ const generateHttpdConf = async () => {
     try {
         const virtualHosts = await getVirtualHosts();
         let configContent = '';
+
+        // Remove existing virtual hosts from the hosts file
+        removeVirtualHostsFromHostsFile();
+
+        // Add new virtual hosts to the hosts file
+        addVirtualHostsToHostsFile(virtualHosts);
 
         virtualHosts.forEach(host => {
             configContent += `
