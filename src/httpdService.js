@@ -1,3 +1,5 @@
+import fs from "fs";
+
 const Docker = require('dockerode');
 const path = require("node:path");
 import { getSettings, getVirtualHosts } from './database.js';
@@ -79,7 +81,15 @@ const createHttpdContainer = async () => {
 
                 const virtualHosts = await getVirtualHosts();
                 const binds = virtualHosts.map(host => `${host.document_root}:/var/www/html/${host.name}`);
-                // binds.push('./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf');
+
+                const defaultHttpdConf = path.join(__dirname, 'apache/httpd.conf');
+                const defaultVirtualHostsConf = path.join(__dirname, 'apache/virtualhosts.conf');
+                if (fs.existsSync(defaultHttpdConf)) {
+                    binds.push(`${defaultHttpdConf}:/usr/local/apache2/conf/httpd.conf`);
+                }
+                if (fs.existsSync(defaultVirtualHostsConf)) {
+                    binds.push(`${defaultVirtualHostsConf}:/usr/local/apache2/conf/virtualhosts.conf`);
+                }
 
                 const container = await docker.createContainer({
                     Image: 'httpd:latest',

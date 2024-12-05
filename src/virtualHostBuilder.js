@@ -5,6 +5,12 @@ import { app } from 'electron';
 
 const generateHttpdConf = async () => {
 
+    // Apache working directory
+    const apacheDir = path.join(__dirname, 'apache');
+    if (!fs.existsSync(apacheDir)) {
+        fs.mkdirSync(apacheDir);
+    }
+
     // Read default HTTPD configuration file
     const defaultConfigPath = path.join(app.getAppPath(), 'docker/apache/httpd.conf');
     console.log('defaultConfigPath:', defaultConfigPath);
@@ -12,7 +18,7 @@ const generateHttpdConf = async () => {
     const defaultConfig = fs.readFileSync(defaultConfigPath, 'utf8');
 
     // Write default configuration to new file
-    const newConfigPath = path.join(__dirname, 'httpd.conf');
+    const newConfigPath = path.join(__dirname, 'apache/httpd.conf');
     fs.writeFileSync(newConfigPath, defaultConfig);
     console.log('httpd.conf file generated successfully.');
 
@@ -35,7 +41,7 @@ const generateHttpdConf = async () => {
 `;
         });
 
-        const configPath = path.join(__dirname, 'virtualhosts.conf');
+        const configPath = path.join(__dirname, 'apache/virtualhosts.conf');
 
         console.log('configPath:', configPath);
 
