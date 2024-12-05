@@ -1,5 +1,6 @@
 const Docker = require('dockerode');
 const path = require("node:path");
+import { getSettings } from './database.js';
 var docker = new Docker();
 
 const startHttpdContainer = async () => {
@@ -71,13 +72,15 @@ const createHttpdContainer = async () => {
                         }
                     });
                 });
+                const settings = await getSettings();
+
                 const container = await docker.createContainer({
                     Image: 'httpd:latest',
                     name: 'phyreamp-httpd',
                     HostConfig: {
                         NetworkMode: 'phyreamp-network',
                         PortBindings: {
-                            '80/tcp': [{ HostPort: '80' }]
+                            '80/tcp': [{ HostPort: settings.httpdPort || '80' }]
                         },
                         Binds: [
                         //    path.resolve(__dirname, '../docker/html') + ':/var/www/html',
@@ -105,7 +108,7 @@ const deleteHttpdContainer = async () => {
     }
 };
 
-module.exports = {
+export {
     startHttpdContainer,
     stopHttpdContainer,
     restartHttpdContainer,

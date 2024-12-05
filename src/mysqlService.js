@@ -1,5 +1,6 @@
 const Docker = require('dockerode');
 const path = require('path');
+import { getSettings } from './database.js';
 var docker = new Docker();
 
 const startMySQLContainer = async () => {
@@ -71,6 +72,7 @@ const createMysqlContainer = async () => {
                         }
                     });
                 });
+                const settings = await getSettings();
                 const container = await docker.createContainer({
                     Image: 'mysql:8.0',
                     name: 'phyreamp-mysql',
@@ -83,7 +85,7 @@ const createMysqlContainer = async () => {
                     HostConfig: {
                         NetworkMode: 'phyreamp-network',
                         PortBindings: {
-                            '3306/tcp': [{ HostPort: '3306' }]
+                            '3306/tcp': [{ HostPort: settings.mysqlPort || '3306' }]
                         },
                         Binds: [path.resolve(__dirname, '../docker/mysql-data') + ':/var/lib/mysql']
                     }
@@ -109,7 +111,7 @@ const deleteMysqlContainer = async () => {
 };
 
 
-module.exports = {
+export {
     startMySQLContainer,
     stopMySQLContainer,
     restartMySQLContainer,

@@ -1,4 +1,5 @@
 const Docker = require('dockerode');
+import { getSettings } from './database.js';
 var docker = new Docker();
 
 const startRedisContainer = async () => {
@@ -60,13 +61,14 @@ const createRedisContainer = async () => {
                         }
                     });
                 });
+                const settings = await getSettings();
                 const container = await docker.createContainer({
                     Image: 'redis:latest',
                     name: 'phyreamp-redis',
                     HostConfig: {
                         NetworkMode: 'phyreamp-network',
                         PortBindings: {
-                            '6379/tcp': [{ HostPort: '6379' }]
+                            '6379/tcp': [{ HostPort: settings.redisPort || '6379' }]
                         }
                     }
                 });
@@ -90,7 +92,7 @@ const deleteRedisContainer = async () => {
     }
 };
 
-module.exports = {
+export {
     startRedisContainer,
     stopRedisContainer,
     getRedisContainerStatus,

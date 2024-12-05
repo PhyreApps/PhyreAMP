@@ -1,4 +1,5 @@
 const Docker = require('dockerode');
+import { getSettings } from './database.js';
 var docker = new Docker();
 
 const startPhpMyAdminContainer = async () => {
@@ -60,6 +61,7 @@ const createPhpMyAdminContainer = async () => {
                         }
                     });
                 });
+                const settings = await getSettings();
                 const container = await docker.createContainer({
                     Image: 'phpmyadmin/phpmyadmin',
                     name: 'phyreamp-phpmyadmin',
@@ -71,7 +73,7 @@ const createPhpMyAdminContainer = async () => {
                     HostConfig: {
                         NetworkMode: 'phyreamp-network',
                         PortBindings: {
-                            '80/tcp': [{ HostPort: '8081' }]
+                            '80/tcp': [{ HostPort: settings.phpmyadminPort || '8081' }]
                         }
                     }
                 });
@@ -95,7 +97,7 @@ const deletePhpMyAdminContainer = async () => {
     }
 };
 
-module.exports = {
+export {
     startPhpMyAdminContainer,
     stopPhpMyAdminContainer,
     getPhpMyAdminContainerStatus,
