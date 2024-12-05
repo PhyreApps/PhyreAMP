@@ -23,6 +23,7 @@ const generateHttpdConf = async () => {
     fs.writeFileSync(newConfigPath, defaultConfig);
     console.log('httpd.conf file generated successfully.');
 
+
     try {
         const virtualHosts = await getVirtualHosts();
         let configContent = '';

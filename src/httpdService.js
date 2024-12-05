@@ -83,17 +83,16 @@ const createHttpdContainer = async () => {
                 const binds = virtualHosts.map(host => `${host.document_root}:/var/www/html/${host.local_domain}`);
 
                 const defaultHttpdConf = path.join(__dirname, 'apache/httpd.conf');
-                const defaultVirtualHostsConf = path.join(__dirname, 'apache/virtualhosts.conf');
                 if (fs.existsSync(defaultHttpdConf)) {
                     binds.push(`${defaultHttpdConf}:/usr/local/apache2/conf/httpd.conf`);
                 }
+
+                const defaultVirtualHostsConf = path.join(__dirname, 'apache/virtualhosts.conf');
                 if (fs.existsSync(defaultVirtualHostsConf)) {
                     binds.push(`${defaultVirtualHostsConf}:/usr/local/apache2/conf/virtualhosts.conf`);
                 }
 
-                const extraHosts = [
-                    "host.docker.internal:host-gateway"
-                ];
+                const extraHosts = virtualHosts.map(host => `${host.local_domain}:127.0.0.1`);
 
                 const container = await docker.createContainer({
                     Image: 'httpd:latest',
