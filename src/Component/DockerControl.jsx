@@ -3,6 +3,7 @@ import './DockerControl.css';
 
 const DockerControl = () => {
     const [status, setStatus] = React.useState('');
+    const [httpdPort, setHttpdPort] = React.useState('80');
     const [isRebuilding, setIsRebuilding] = React.useState(false);
     const [dockerRunning, setDockerRunning] = React.useState(false);
 
@@ -32,7 +33,19 @@ const DockerControl = () => {
             setDockerRunning(running);
         };
 
+        const fetchSettings = async () => {
+            try {
+                const result = await window.electron.ipcRenderer.invoke('get-settings');
+                if (result.success && result.settings) {
+                    setHttpdPort(result.settings.httpdPort || '80');
+                }
+            } catch (error) {
+                console.error('Error fetching settings:', error);
+            }
+        };
+
         const fetchDockerStatus = async () => {
+            await fetchSettings();
             await checkDockerRunning();
             const result = await window.electron.ipcRenderer.invoke('all-containers-status');
             if (result.success) {
@@ -88,7 +101,7 @@ const DockerControl = () => {
                             gap: '5px',
                         }
                     }>
-                        <a onClick={() => window.electron.openExternal(`http://localhost`)} target="_blank">Running on http://localhost</a>
+                        <a onClick={() => window.electron.openExternal(`http://localhost:${httpdPort}`)} target="_blank">Running on http://localhost:{httpdPort}</a>
                         <a onClick={() => window.electron.openExternal(`http://localhost:8081`)} target="_blank">Open PhpMyAdmin</a>
                     </div></> : <div>Docker is not running.</div>
                 }
