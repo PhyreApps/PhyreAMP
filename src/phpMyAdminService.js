@@ -64,7 +64,8 @@ const createPhpMyAdminContainer = async () => {
                     Image: 'phpmyadmin/phpmyadmin',
                     name: 'phyreamp-phpmyadmin',
                     Env: [
-                        'PMA_HOST=mysql',
+                        'PMA_HOST=phyreamp-mysql',
+                        'PMA_PORT: 3306',
                         'MYSQL_ROOT_PASSWORD=root'
                     ],
                     HostConfig: {

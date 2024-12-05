@@ -51,7 +51,8 @@ services:
     ports:
       - "8081:80"
     environment:
-      PMA_HOST: mysql
+      PMA_HOST: phyreamp-mysql
+      PMA_PORT: 3306
       MYSQL_ROOT_PASSWORD: root
     depends_on:
       - mysql
