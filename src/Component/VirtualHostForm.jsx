@@ -98,15 +98,28 @@ const VirtualHostForm = (props) => {
                         <div>
                             <label>
                                 Document Root:
-                                <input type="text" name="document_root" value={formData.document_root} onChange={handleChange} required placeholder="Select document root" />
-                                <button type="button" className="button" onClick={handleFolderSelect}>Select Folder</button>
                             </label>
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                gap: '10px'
+                            }}>
+                                <input type="text" name="document_root" value={formData.document_root}  onChange={handleChange} required placeholder="Select document root"/>
+                                <button type="button"
+                                        style={{
+                                            width: '220px',
+                                        }}
+                                        className="button" onClick={handleFolderSelect}>Select Folder
+                                </button>
+                            </div>
                         </div>
                         <div>
                             <label>
                                 PHP Version:
-                                <select name="php_version" value={formData.php_version} onChange={handleChange} required>
-                                    <option value="">Select PHP Version</option>
+                                <select name="php_version" value={formData.php_version} onChange={handleChange}
+                                        required>
+                                <option value="">Select PHP Version</option>
                                     {Object.entries(phpVersions).map(([key, value]) => (
                                         <option key={key} value={key}>{value}</option>
                                     ))}
