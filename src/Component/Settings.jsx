@@ -48,14 +48,21 @@ const Settings = () => {
 
     const [isSaving, setIsSaving] = React.useState(false);
 
+    const [isResetting, setIsResetting] = React.useState(false);
+
     const resetToDefault = async () => {
-        setSettings({
-            redisPort: '6379',
-            mysqlPort: '3306',
-            httpdPort: '80',
-            allowedPhpVersions: phpVersions.reduce((acc, version) => ({...acc, [version]: true}), {})
-        });
-        await handleSave();
+        setIsResetting(true);
+        try {
+            setSettings({
+                redisPort: '6379',
+                mysqlPort: '3306',
+                httpdPort: '80',
+                allowedPhpVersions: phpVersions.reduce((acc, version) => ({...acc, [version]: true}), {})
+            });
+            await handleSave();
+        } finally {
+            setIsResetting(false);
+        }
     };
 
     const handleSave = async () => {
@@ -121,9 +128,11 @@ const Settings = () => {
             <button type="button" onClick={handleSave} className="button" disabled={isSaving}>
                 {isSaving ? 'Saving...' : 'Save Settings'}
             </button>
-            <button type="button" onClick={resetToDefault} className="button" style={{ marginLeft: '10px' }}>
-                Reset to Default
-            </button>
+            {!isResetting && (
+                <button type="button" onClick={resetToDefault} className="button" style={{ marginLeft: '10px' }}>
+                    Reset to Default
+                </button>
+            )}
         </form>
     );
 };
