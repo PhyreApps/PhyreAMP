@@ -21,15 +21,18 @@ module.exports = {
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        icon: '/images/icons/icon.png'
+      },
     },
     {
       name: '@electron-forge/maker-zip',
       platforms: ['darwin'],
       config: {
-       options: {
-            icon: '/images/icons/icon.png'
-       }
+        icon: '/images/icons/icon.png',
+        options: {
+          icon: '/images/icons/icon.png'
+        }
       },
     },
     {
@@ -40,16 +43,19 @@ module.exports = {
         }
       }
     },
-    // {
-    //   // Path to the icon to use for the app in the DMG window
-    //   name: '@electron-forge/maker-dmg',
-    //   config: {
-    //     icon: '/images/icons/icon.png'
-    //   }
-    // },
+    {
+      name: '@electron-forge/maker-dmg',
+      config: {
+        icon: '/images/icons/icon.png'
+      }
+    },
     {
       name: '@electron-forge/maker-rpm',
-      config: {},
+      config: {
+        options: {
+          icon: '/images/icons/icon.png'
+        }
+      },
     },
   ],
   plugins: [
