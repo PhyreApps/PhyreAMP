@@ -46,6 +46,9 @@ const createPhpFpmContainer = async (phpVersion) => {
                 // merge two binds
                 binds.push(...secondBinds);
 
+                // Use a Set to filter out duplicate binds
+                const uniqueBinds = [...new Set(binds)];
+
                 const container = await docker.createContainer({
                     Image: `php:${phpVersion}-fpm`,
                     name: `phyreamp-php${phpVersion.replace('.', '')}-fpm`,
