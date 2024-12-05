@@ -37,7 +37,7 @@ const getHttpdContainerStatus = async () => {
     try {
         const container = docker.getContainer('phyreamp-httpd');
         const data = await container.inspect();
-        return { success: true, message: `HTTPD container is ${data.State.Status}.` };
+        return { success: true, message: `Running` };
     } catch (error) {
         return { success: false, error: `Error fetching status for HTTPD container: ${error.message}` };
     }

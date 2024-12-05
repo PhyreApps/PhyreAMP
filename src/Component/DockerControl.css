@@ -10,6 +10,10 @@
     color: #fff;
 }
 
+.status-success {
+    color: #4CAF50; /* Green color for success */
+}
+
 .docker-control .status {
     flex: 1;
 }

@@ -69,7 +69,7 @@ const getPhpFpmContainerStatus = async (phpVersion) => {
         const containerName = `phyreamp-php${phpVersion.replace('.', '')}-fpm`;
         const container = docker.getContainer(containerName);
         const data = await container.inspect();
-        return { success: true, message: `PHP-FPM container for PHP ${phpVersion} is ${data.State.Status}.` };
+        return { success: true, message: `Running` };
     } catch (error) {
         return { success: false, error: `Error fetching status for PHP-FPM container for PHP ${phpVersion}: ${error.message}` };
     }

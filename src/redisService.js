@@ -26,7 +26,7 @@ const getRedisContainerStatus = async () => {
     try {
         const container = docker.getContainer('phyreamp-redis');
         const data = await container.inspect();
-        return { success: true, message: `Redis container is ${data.State.Status}.` };
+        return { success: true, message: `Running` };
     } catch (error) {
         return { success: false, error: `Error fetching status for Redis container: ${error.message}` };
     }
