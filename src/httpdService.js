@@ -1,6 +1,6 @@
 const Docker = require('dockerode');
 const path = require("node:path");
-import { getSettings } from './database.js';
+import { getSettings, getVirtualHosts } from './database.js';
 var docker = new Docker();
 
 const startHttpdContainer = async () => {
@@ -77,6 +77,10 @@ const createHttpdContainer = async () => {
                 });
                 const settings = await getSettings();
 
+                const virtualHosts = await getVirtualHosts();
+                const binds = virtualHosts.map(host => `${host.document_root}:/var/www/html/${host.name}`);
+                // binds.push('./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf');
+
                 const container = await docker.createContainer({
                     Image: 'httpd:latest',
                     name: 'phyreamp-httpd',
@@ -85,10 +89,7 @@ const createHttpdContainer = async () => {
                         PortBindings: {
                             '80/tcp': [{ HostPort: (settings.httpdPort || '80').toString() }]
                         },
-                        Binds: [
-                        //    path.resolve(__dirname, '../docker/html') + ':/var/www/html',
-                      //      path.resolve(__dirname, '../docker/apache') + '/httpd.conf:/usr/local/apache2/conf/httpd.conf',
-                        ]
+                        Binds: binds
                     }
                 });
                 await container.start();
