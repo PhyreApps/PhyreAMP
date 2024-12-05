@@ -3,6 +3,13 @@ import './DockerControl.css';
 
 const DockerControl = () => {
     const [status, setStatus] = React.useState('');
+    const [statuses, setStatuses] = React.useState({
+        httpd: '',
+        mysql: '',
+        redis: '',
+        phpmyadmin: '',
+        phpfpms: ''
+    });
     const [httpdPort, setHttpdPort] = React.useState('80');
     const [isRebuilding, setIsRebuilding] = React.useState(false);
     const [dockerRunning, setDockerRunning] = React.useState(false);
@@ -44,7 +51,24 @@ const DockerControl = () => {
             }
         };
 
+        const fetchContainerStatuses = async () => {
+            const httpdStatus = await window.electron.ipcRenderer.invoke('status-container', 'phyreamp-httpd') || {};
+            const mysqlStatus = await window.electron.ipcRenderer.invoke('status-container', 'phyreamp-mysql') || {};
+            const redisStatus = await window.electron.ipcRenderer.invoke('status-container', 'phyreamp-redis') || {};
+            const phpmyadminStatus = await window.electron.ipcRenderer.invoke('status-container', 'phyreamp-phpmyadmin') || {};
+            const phpfpmsStatus = await window.electron.ipcRenderer.invoke('phpfpm-container-status', '8.3') || {}; // Example PHP version
+
+            setStatuses({
+                httpd: httpdStatus.message || 'Unknown',
+                mysql: mysqlStatus.message || 'Unknown',
+                redis: redisStatus.message || 'Unknown',
+                phpmyadmin: phpmyadminStatus.message || 'Unknown',
+                phpfpms: phpfpmsStatus.message || 'Unknown'
+            });
+        };
+
         const fetchDockerStatus = async () => {
+            await fetchContainerStatuses();
             await fetchSettings();
             await checkDockerRunning();
             const result = await window.electron.ipcRenderer.invoke('all-containers-status');
@@ -90,7 +114,13 @@ const DockerControl = () => {
     return (
         <div className="docker-control">
             <div className="status">
-                {status && <div>Container Status: {status}</div>}
+                <div>
+                    <div>HTTPD Status: {statuses.httpd}</div>
+                    <div>MySQL Status: {statuses.mysql}</div>
+                    <div>Redis Status: {statuses.redis}</div>
+                    <div>phpMyAdmin Status: {statuses.phpmyadmin}</div>
+                    <div>PHP-FPM Status: {statuses.phpfpms}</div>
+                </div>
 
                 {dockerRunning ? <>
                     <div style={

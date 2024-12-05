@@ -21,7 +21,7 @@ import {
   createRedisContainer,
   deleteRedisContainer
 } from './redisService';
-import { createHttpdContainer, deleteHttpdContainer, startHttpdContainer } from "./httpdService";
+import {createHttpdContainer, deleteHttpdContainer, getHttpdContainerStatus, startHttpdContainer} from "./httpdService";
 const Docker = require('dockerode');
 const docker = new Docker();
 
@@ -219,6 +219,17 @@ ipcMain.handle('status-container', async (event, containerName) => {
   if (containerName === 'phyreamp-phpmyadmin') {
     return await getPhpMyAdminContainerStatus();
   }
+    if (containerName === 'phyreamp-mysql') {
+        return await getMySQLContainerStatus();
+    }
+    if (containerName === 'phyreamp-redis') {
+        return await getRedisContainerStatus();
+    }
+    if (containerName === 'phyreamp-httpd') {
+        return await getHttpdContainerStatus();
+    }
+
+    return await getContainerStatus(containerName);
 });
 
 ipcMain.handle('all-containers-status', async (event) => {
