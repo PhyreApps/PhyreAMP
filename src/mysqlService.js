@@ -77,10 +77,23 @@ const createMysqlContainer = async () => {
         return { success: false, error: `Error checking MySQL container: ${error.message}` };
     }
 };
+
+const deleteMysqlContainer = async () => {
+    try {
+        const container = docker.getContainer('phyreamp-mysql');
+        await container.remove({ force: true });
+        return { success: true, message: 'MySQL container deleted successfully.' };
+    } catch (error) {
+        return { success: false, error: `Error deleting MySQL container: ${error.message}` };
+    }
+};
+
+
 module.exports = {
     startMySQLContainer,
     stopMySQLContainer,
     restartMySQLContainer,
     getMySQLContainerStatus,
-    createMysqlContainer
+    createMysqlContainer,
+    deleteMysqlContainer
 };

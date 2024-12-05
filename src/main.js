@@ -9,7 +9,7 @@ import {
   stopMySQLContainer,
   restartMySQLContainer,
   getMySQLContainerStatus,
-  createMysqlContainer
+  createMysqlContainer, deleteMysqlContainer
 } from './mysqlService';
 import { exec } from 'child_process';
 
@@ -175,6 +175,8 @@ ipcMain.handle('all-containers-status', async (event) => {
 })
 
 ipcMain.handle('rebuild-containers', async (event) => {
+
+  await deleteMysqlContainer();
 
   return await createMysqlContainer();
 
