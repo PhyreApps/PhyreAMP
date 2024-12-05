@@ -313,7 +313,7 @@ ipcMain.handle('all-containers-status', async (event) => {
     return {
       success: true,
       message: 'Container statuses fetched successfully.',
-      status: (httpdStatus.success && mysqlStatus.success),
+      status: (httpdStatus.success && mysqlStatus.success) ? 'Running' : 'Stopped',
       statuses: {
         httpd: httpdStatus.message || 'Unknown',
         mysql: mysqlStatus.message || 'Unknown',
