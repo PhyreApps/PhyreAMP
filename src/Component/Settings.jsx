@@ -53,19 +53,22 @@ const Settings = () => {
     const resetToDefault = async () => {
         setIsResetting(true);
         try {
-            setSettings({
+            let defaultSettings = {
                 redisPort: '6379',
                 mysqlPort: '3306',
                 httpdPort: '80',
                 allowedPhpVersions: phpVersions.reduce((acc, version) => ({...acc, [version]: true}), {})
-            });
-            await handleSave();
-        } finally {
+            };
+            setSettings(defaultSettings);
+            await saveSettings(defaultSettings);
+
+        } catch (error) {
+            console.error('Error resetting to default:', error);
             setIsResetting(false);
         }
     };
 
-    const handleSave = async () => {
+    const saveSettings = async (settings) => {
         setIsSaving(true);
         try {
             const result = await window.electron.ipcRenderer.invoke('save-settings', settings);
@@ -83,6 +86,10 @@ const Settings = () => {
         } catch (error) {
             alert(`Error saving settings: ${error.message}`);
         }
+    }
+
+    const handleSave = async () => {
+        await saveSettings(settings);
     };
 
     if (!settings) {
