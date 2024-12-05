@@ -1,6 +1,5 @@
 import * as React from 'react';
 import './DockerControl.css';
-import ServiceStatus from './ServiceStatus.jsx';
 
 const DockerControl = () => {
     const [status, setStatus] = React.useState('');
@@ -94,7 +93,6 @@ const DockerControl = () => {
     return (
         <div className="docker-control">
             <div className="status">
-                <ServiceStatus />
 
                 {dockerRunning ? <>
                     <div style={

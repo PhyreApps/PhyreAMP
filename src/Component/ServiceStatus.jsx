@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 const ServiceStatus = () => {
-    
+
     const [statuses, setStatuses] = React.useState({
         httpd: '',
         mysql: '',

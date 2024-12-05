@@ -8,6 +8,7 @@ import VirtualHostTable from './Component/VirtualHostTable.jsx';
 import DockerControl from './Component/DockerControl.jsx';
 import PhyreAMPLogo from './Icons/PhyreAMPLogo.jsx';
 import Settings from "./Component/Settings.jsx";
+import ServiceStatus from "./Component/ServiceStatus.jsx";
 
 const root = createRoot(document.getElementById('app'));
 const App = () => {
@@ -34,7 +35,11 @@ const App = () => {
                 <button onClick={() => setActiveTab('form')} className={activeTab === 'form' ? 'active' : 'inactive'}>
                     Create Virtual Host
                 </button>
-                <button onClick={() => setActiveTab('settings')} className={activeTab === 'settings' ? 'active' : 'inactive'}>
+                <button onClick={() => setActiveTab('services')} className={activeTab === 'services' ? 'active' : 'inactive'}>
+                    Services Statuses
+                </button>
+                <button onClick={() => setActiveTab('settings')}
+                        className={activeTab === 'settings' ? 'active' : 'inactive'}>
                     Settings
                 </button>
 
@@ -42,6 +47,7 @@ const App = () => {
             <div className="tab-content">
                 {activeTab === 'form' && <VirtualHostForm/>}
                 {activeTab === 'table' && <VirtualHostTable/>}
+                {activeTab === 'services' && <ServiceStatus/>}
                 {activeTab === 'settings' && <Settings/>}
             </div>
         </div>
