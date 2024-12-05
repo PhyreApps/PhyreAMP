@@ -2,10 +2,11 @@ import * as React from 'react';
 import './DockerControl.css';
 
 const DockerControl = () => {
-    const [status, setStatus] = React.useState('');
+    const [status, setStatus] = React.useState('Not running');
     const [httpdPort, setHttpdPort] = React.useState('80');
     const [isStopping, setIsStopping] = React.useState(false);
     const [isRestarting, setIsRestarting] = React.useState(false);
+    const [isStarting, setIsStarting] = React.useState(false);
     const [dockerRunning, setDockerRunning] = React.useState(false);
 
 
@@ -18,19 +19,16 @@ const DockerControl = () => {
         }
     };
 
-    const startDockerApp = async () => {
-        try {
-            await window.electron.ipcRenderer.invoke('start-docker-app');
-            alert('Docker app started successfully.');
-            setDockerRunning(true);
-        } catch (error) {
-            alert(`Error starting Docker app: ${error.message}`);
-        }
-    };
+    const startApp = async () => {
+        setIsStarting(true);
 
-    const checkDockerRunning = async () => {
-        const running = await isDockerRunning();
-        setDockerRunning(running);
+        await fetchSettings();
+
+        await window.electron.ipcRenderer.invoke('start-docker-app');
+        await window.electron.ipcRenderer.invoke('start-all-containers');
+        setIsStarting(false);
+
+        await fetchAllContainersStatuses();
     };
 
     const fetchSettings = async () => {
@@ -44,56 +42,12 @@ const DockerControl = () => {
         }
     };
 
-    const fetchDockerStatus = async () => {
-
-        await fetchSettings();
-        await checkDockerRunning();
-
+    const fetchAllContainersStatuses = async () => {
         const result = await window.electron.ipcRenderer.invoke('all-containers-status');
         if (result && result.success) {
             setStatus(result.status);
         } else {
             setStatus(`Error fetching Docker status: ${result.error}`);
-        }
-
-    };
-
-    React.useEffect(() => {
-        fetchDockerStatus();
-    }, []);
-    const executeCommand = async (command) => {
-        const dockerRunning = await isDockerRunning();
-        if (!dockerRunning) {
-            const startDocker = window.confirm('Docker is not running. Would you like to start it?');
-            if (startDocker) {
-                await startDockerApp();
-            } else {
-                return;
-            }
-        }
-        try {
-            let result;
-            if (command === 'stop-all-containers') {
-                setIsStopping(true);
-                result = await window.electron.ipcRenderer.invoke(command);
-                setIsStopping(false);
-            } else if (command === 'restart-all-containers') {
-                setIsRestarting(true);
-                result = await window.electron.ipcRenderer.invoke(command);
-                setIsRestarting(false);
-            } else {
-                result = await window.electron.ipcRenderer.invoke(command);
-            }
-            if (result && result.success) {
-                // alert(result.message);
-                // if (command === 'all-containers-status') {
-                //     setStatus(result.message);
-                // }
-            } else {
-                alert(`Error executing ${command}: ${result.error}`);
-            }
-        } catch (error) {
-            alert(`Error executing ${command}: ${error.message}`);
         }
     };
 
@@ -102,61 +56,56 @@ const DockerControl = () => {
             <div className="status">
 
 
-                        {status === 'Running' ? <div>
+                {status === 'Running' ? <div>
 
-                                        <div style={
-                                            {
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                marginTop: '10px',
-                                                gap: '5px',
-                                            }
-                                        }>
-                                        <a onClick={() => window.electron.openExternal(`http://localhost${httpdPort === '8000' ? '' : `:${httpdPort}`}`)}
-                                           target="_blank">Running on http://localhost{httpdPort === '8000' ? '' : `:${httpdPort}`}</a>
-                                        <a onClick={() => window.electron.openExternal(`http://localhost:8081`)} target="_blank">Open
-                                            PhpMyAdmin</a>
+                        <div style={
+                            {
+                                display: 'flex',
+                                flexDirection: 'column',
+                                marginTop: '10px',
+                                gap: '5px',
+                            }
+                        }>
+                            <a onClick={() => window.electron.openExternal(`http://localhost${httpdPort === '8000' ? '' : `:${httpdPort}`}`)}
+                               target="_blank">Running on http://localhost{httpdPort === '8000' ? '' : `:${httpdPort}`}</a>
+                            <a onClick={() => window.electron.openExternal(`http://localhost:8081`)} target="_blank">Open
+                                PhpMyAdmin</a>
 
-                                    </div>
-                            </div>
-                                : <div>{status}</div>
+                        </div>
+                    </div>
+                    : <div>{status}</div>
 
-                        }
+                }
 
-                        {dockerRunning ? <> </> : <div>Docker is not running.</div>
-                        }
-
-                </div>
-                <div className="buttons">
-                    {!dockerRunning && (
-                        <button className="button" onClick={async () => {
-                            await startDockerApp();
-                            await executeCommand('start-all-containers').then(async () => {
-                                await fetchDockerStatus();
-                            });
-                        }}>
-                            Start Docker
-                        </button>
-                    )}
-                    {!dockerRunning || status !== 'Running' && (
-                        <button className="button" onClick={() => executeCommand('start-all-containers')}>
-                            {isStopping ? 'Stopping...' : isRestarting ? 'Restarting...' : 'Start'}
-                        </button>
-                    )}
-                    {status === 'Running' && dockerRunning && (
-                        <>
-                            <button className={`button stop-button ${isStopping ? 'stopping' : ''}`}
-                                    onClick={() => executeCommand('stop-all-containers')}>
-                                {isStopping ? 'Stopping...' : 'Stop'}
-                            </button>
-                            <button className="restart-button" onClick={() => executeCommand('restart-all-containers')}>
-                                {isRestarting ? 'Restarting...' : 'Restart'}
-                            </button>
-                        </>
-                    )}
-                </div>
             </div>
-            );
-            };
+            <div className="buttons">
 
-            export default DockerControl;
+                {status === 'Not running' && (
+                    <button className="button start-button" onClick={async()=> {
+                        await startApp();
+                    }}>
+                        {isStarting ? 'Starting...' : 'Start'}
+                    </button>
+                )}
+
+                {status === 'Running' && (
+                    <>
+                        <button className={`button stop-button ${isStopping ? 'stopping' : ''}`}
+                                onClick={() => {
+
+                                }}>
+                            {isStopping ? 'Stopping...' : 'Stop'}
+                        </button>
+                        <button className="restart-button" onClick={() => {
+
+                        }}>
+                            {isRestarting ? 'Restarting...' : 'Restart'}
+                        </button>
+                    </>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default DockerControl;
