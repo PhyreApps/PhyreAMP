@@ -28,10 +28,12 @@ const DockerControl = () => {
         if (!isDockerUp) {
             await window.electron.ipcRenderer.invoke('start-docker-app');
         }
-        await window.electron.ipcRenderer.invoke('start-all-containers');
-        setIsStarting(false);
 
-        await fetchAllContainersStatuses();
+        await window.electron.ipcRenderer.invoke('start-all-containers').then(async (log) => {
+            setIsStarting(false);
+            await fetchAllContainersStatuses();
+        });
+
     };
 
     const stopApp = async () => {
