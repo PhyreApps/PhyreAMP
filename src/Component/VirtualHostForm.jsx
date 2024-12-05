@@ -18,6 +18,8 @@ const VirtualHostForm = () => {
         local_domain: ''
     });
 
+    const [isLoading, setIsLoading] = React.useState(false);
+
     const validateDomain = (domain) => {
         const domainPattern = /^(?!:\/\/)([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,6}$/;
         return domainPattern.test(domain);
@@ -43,19 +45,27 @@ const VirtualHostForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         if (!validateDomain(formData.local_domain)) {
+            setIsLoading(false);
             alert('Please enter a valid domain format.');
             return;
         }
         const result = await ipcRenderer.invoke('save-virtual-host', formData);
         if (result.success) {
             alert('Virtual host saved successfully!');
-        } else {
+            setIsLoading(false);
             alert(`Error saving virtual host: ${result.error}`);
         }
     };
 
-    return (
+    return isLoading ? (
+        <div style={{
+            color: 'white',
+        }}>
+            Creating virtual host...
+        </div>
+    ) : (
         <form onSubmit={handleSubmit}>
             <div>
                 <label>
