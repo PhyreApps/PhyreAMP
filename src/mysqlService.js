@@ -52,6 +52,23 @@ const createMysqlContainer = async () => {
     } catch (error) {
         if (error.statusCode === 404) {
             try {
+                await docker.pull('mysql:8.0', (err, stream) => {
+                    if (err) {
+                        throw new Error(`Error pulling MySQL image: ${err.message}`);
+                    }
+                    docker.modem.followProgress(stream, onFinished, onProgress);
+
+                    function onFinished(err, output) {
+                        if (err) {
+                            throw new Error(`Error pulling MySQL image: ${err.message}`);
+                        }
+                    }
+
+                    function onProgress(event) {
+                        console.log(event);
+                    }
+                });
+
                 const container = await docker.createContainer({
                     Image: 'mysql:8.0',
                     name: 'phyreamp-mysql',

@@ -41,6 +41,23 @@ const createPhpMyAdminContainer = async () => {
     } catch (error) {
         if (error.statusCode === 404) {
             try {
+                await docker.pull('phpmyadmin/phpmyadmin', (err, stream) => {
+                    if (err) {
+                        throw new Error(`Error pulling phpMyAdmin image: ${err.message}`);
+                    }
+                    docker.modem.followProgress(stream, onFinished, onProgress);
+
+                    function onFinished(err, output) {
+                        if (err) {
+                            throw new Error(`Error pulling phpMyAdmin image: ${err.message}`);
+                        }
+                    }
+
+                    function onProgress(event) {
+                        console.log(event);
+                    }
+                });
+
                 const container = await docker.createContainer({
                     Image: 'phpmyadmin/phpmyadmin',
                     name: 'phyreamp-phpmyadmin',
