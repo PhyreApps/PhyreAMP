@@ -248,6 +248,12 @@ ipcMain.handle('stop-all-containers', async () => {
     await stopMySQLContainer();
     await stopRedisContainer();
     await stopPhpMyAdminContainer();
+
+    const virtualHosts = await getVirtualHosts();
+    for (const host of virtualHosts) {
+      const status = await stopP(host.php_version);
+    }
+
     return { success: true, message: 'All containers stopped successfully.' };
   } catch (error) {
     return { success: false, error: error.message };
