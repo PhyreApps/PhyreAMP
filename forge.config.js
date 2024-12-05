@@ -22,16 +22,16 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        icon: '/images/icons/icon.png'
+        icon: './src/assets/icons/icon.png'
       },
     },
     {
       name: '@electron-forge/maker-zip',
       platforms: ['darwin'],
       config: {
-        icon: '/images/icons/icon.png',
+        icon: './src/assets/icons/icon.png',
         options: {
-          icon: '/images/icons/icon.png'
+          icon: './src/assets/icons/icon.png'
         }
       },
     },
@@ -39,21 +39,21 @@ module.exports = {
       name: '@electron-forge/maker-deb',
       config: {
         options: {
-          icon: '/images/icons/icon.png'
+          icon: './src/assets/icons/icon.png'
         }
       }
     },
     {
       name: '@electron-forge/maker-dmg',
       config: {
-        icon: '/images/icons/icon.png'
+        icon: './src/assets/icons/icon.png'
       }
     },
     {
       name: '@electron-forge/maker-rpm',
       config: {
         options: {
-          icon: '/images/icons/icon.png'
+          icon: './src/assets/icons/icon.png'
         }
       },
     },
