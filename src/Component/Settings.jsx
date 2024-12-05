@@ -16,7 +16,7 @@ const Settings = () => {
                         redisPort: '6379',
                         mysqlPort: '3306',
                         httpdPort: '80',
-                        allowedPhpVersions: phpVersions.reduce((acc, version) => ({ ...acc, [version]: true }), {})
+                        allowedPhpVersions: phpVersions.reduce((acc, version) => ({...acc, [version]: true}), {})
                     });
                 }
             } catch (error) {
@@ -28,7 +28,7 @@ const Settings = () => {
     }, []);
 
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+        const {name, value, type, checked} = e.target;
         if (phpVersions.includes(name)) {
             setSettings(prevSettings => ({
                 ...prevSettings,
@@ -47,6 +47,16 @@ const Settings = () => {
     };
 
     const [isSaving, setIsSaving] = React.useState(false);
+
+    const resetToDefault = async () => {
+        setSettings({
+            redisPort: '6379',
+            mysqlPort: '3306',
+            httpdPort: '80',
+            allowedPhpVersions: phpVersions.reduce((acc, version) => ({...acc, [version]: true}), {})
+        });
+        await handleSave();
+    };
 
     const handleSave = async () => {
         setIsSaving(true);
@@ -67,6 +77,7 @@ const Settings = () => {
             alert(`Error saving settings: ${error.message}`);
         }
     };
+
     if (!settings) {
         return <div>Loading settings...</div>;
     }
@@ -109,6 +120,9 @@ const Settings = () => {
             </div>
             <button type="button" onClick={handleSave} className="button" disabled={isSaving}>
                 {isSaving ? 'Saving...' : 'Save Settings'}
+            </button>
+            <button type="button" onClick={resetToDefault} className="button" style={{ marginLeft: '10px' }}>
+                Reset to Default
             </button>
         </form>
     );
