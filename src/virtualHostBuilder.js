@@ -3,20 +3,16 @@ import path from 'path';
 import { getVirtualHosts } from './database';
 import { app } from 'electron';
 import { addVirtualHostsToHostsFile, removeVirtualHostsFromHostsFile } from './osHostService';
-var sudo = require('sudo-prompt');
 
 const generateHttpdConf = async () => {
 
-    var options = {
-        name: 'PhyreAMP',
-        // icns: '/Applications/Electron.app/Contents/Resources/Electron.icns', // (optional)
-    };
-    sudo.exec('echo hello', options,
-        function(error, stdout, stderr) {
-            if (error) throw error;
-            console.log('stdout: ' + stdout);
-        }
-    );
+    const virtualHosts = await getVirtualHosts();
+
+    // Remove existing virtual hosts from the hosts file
+    await removeVirtualHostsFromHostsFile();
+
+    // Add new virtual hosts to the hosts file
+    await addVirtualHostsToHostsFile(virtualHosts);
 
     // Apache working directory
     const apacheDir = path.join(__dirname, 'apache');
@@ -37,14 +33,7 @@ const generateHttpdConf = async () => {
 
 
     try {
-        const virtualHosts = await getVirtualHosts();
         let configContent = '';
-
-        // Remove existing virtual hosts from the hosts file
-        removeVirtualHostsFromHostsFile();
-
-        // Add new virtual hosts to the hosts file
-        addVirtualHostsToHostsFile(virtualHosts);
 
         virtualHosts.forEach(host => {
             configContent += `

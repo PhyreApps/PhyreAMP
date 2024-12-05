@@ -394,6 +394,9 @@ ipcMain.handle('rebuild-containers', async (event) => {
 })
 
 async function rebuildVirtualHostContainers() {
+
+  await generateHttpdConf();
+
   const virtualHosts = await getVirtualHosts();
   const phpVersions = [...new Set(virtualHosts.map(host => host.php_version))];
 
