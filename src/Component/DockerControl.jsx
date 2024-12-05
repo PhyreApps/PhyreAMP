@@ -48,7 +48,7 @@ const DockerControl = () => {
             await fetchSettings();
             await checkDockerRunning();
             const result = await window.electron.ipcRenderer.invoke('all-containers-status');
-            if (result.success) {
+            if (result && result.success) {
                 setStatus(result.message);
             } else {
                 setStatus(`Error fetching Docker status: ${result.error}`);
