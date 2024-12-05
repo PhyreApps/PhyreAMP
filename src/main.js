@@ -4,6 +4,7 @@ import { generateHttpdConf } from './virtualHostBuilder';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import { startContainer, stopContainer, restartContainer, getContainerStatus } from './dockerService';
+import { startPhpMyAdminContainer, stopPhpMyAdminContainer, getPhpMyAdminContainerStatus, createPhpMyAdminContainer, deletePhpMyAdminContainer } from './phpMyAdminService';
 import {
   startMySQLContainer,
   stopMySQLContainer,
@@ -122,7 +123,10 @@ ipcMain.handle('remove-virtual-host', async (event, id) => {
   }
 });
 
-ipcMain.handle('start-container', async (event) => {
+ipcMain.handle('start-container', async (event, containerName) => {
+  if (containerName === 'phyreamp-phpmyadmin') {
+    return await startPhpMyAdminContainer();
+  }
   try {
     const output = await startMySQLContainer();
     return { success: true, output };
@@ -134,6 +138,8 @@ ipcMain.handle('start-container', async (event) => {
 ipcMain.handle('stop-container', async (event, containerName) => {
   if (containerName === 'phyreamp-mysql') {
     return await stopMySQLContainer();
+  } else if (containerName === 'phyreamp-phpmyadmin') {
+    return await stopPhpMyAdminContainer();
   }
   try {
     const output = await stopContainer(containerName);
@@ -146,6 +152,8 @@ ipcMain.handle('stop-container', async (event, containerName) => {
 ipcMain.handle('restart-container', async (event, containerName) => {
   if (containerName === 'phyreamp-mysql') {
     return await restartMySQLContainer();
+  } else if (containerName === 'phyreamp-phpmyadmin') {
+    return await restartContainer(containerName);
   }
   try {
     const output = await restartContainer(containerName);
@@ -165,7 +173,9 @@ ipcMain.handle('generate-httpd-conf', async () => {
 });
 
 ipcMain.handle('status-container', async (event, containerName) => {
-  return await getMySQLContainerStatus();
+  if (containerName === 'phyreamp-phpmyadmin') {
+    return await getPhpMyAdminContainerStatus();
+  }
 });
 
 ipcMain.handle('all-containers-status', async (event) => {
@@ -176,8 +186,6 @@ ipcMain.handle('all-containers-status', async (event) => {
 
 ipcMain.handle('rebuild-containers', async (event) => {
 
-
-
   const { getNetworkStatus, createNetwork } = require('./dockerService');
 
   const networkStatus = await getNetworkStatus('phyreamp-network');
@@ -187,6 +195,9 @@ ipcMain.handle('rebuild-containers', async (event) => {
       return { success: false, error: createNetworkResult.error };
     }
   }
+
+  await deletePhpMyAdminContainer();
+  await createPhpMyAdminContainer();
 
   await deleteMysqlContainer();
   return await createMysqlContainer();
