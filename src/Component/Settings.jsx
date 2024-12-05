@@ -42,10 +42,14 @@ const Settings = () => {
                 ...prevSettings,
                 [name]: type === 'checkbox' ? checked : value
             }));
+            setIsSaving(false);
         }
     };
 
+    const [isSaving, setIsSaving] = React.useState(false);
+
     const handleSave = async () => {
+        setIsSaving(true);
         try {
             const result = await window.electron.ipcRenderer.invoke('save-settings', settings);
             if (result.success) {
@@ -56,6 +60,7 @@ const Settings = () => {
                     } else {
                         alert(`Error rebuilding containers: ${result.error}`);
                     }
+                    setIsSaving(false);
                 });
             }
         } catch (error) {
@@ -102,7 +107,9 @@ const Settings = () => {
                     </div>
                 ))}
             </div>
-            <button type="button" onClick={handleSave} className="button">Save Settings</button>
+            <button type="button" onClick={handleSave} className="button" disabled={isSaving}>
+                {isSaving ? 'Saving...' : 'Save Settings'}
+            </button>
         </form>
     );
 };
