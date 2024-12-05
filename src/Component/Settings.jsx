@@ -1,6 +1,12 @@
 import * as React from 'react';
 
-const phpVersions = ['php7.3', 'php7.4', 'php8.1', 'php8.2', 'php8.3'];
+const phpVersions = {
+    '7.3': 'PHP 7.3',
+    '7.4': 'PHP 7.4',
+    '8.1': 'PHP 8.1',
+    '8.2': 'PHP 8.2',
+    '8.3': 'PHP 8.3'
+};
 
 const Settings = () => {
     const [settings, setSettings] = React.useState(null);
@@ -12,7 +18,7 @@ const Settings = () => {
                 if (result.success && result.settings && result.settings.httpdPort) {
                     setSettings({
                         ...result.settings,
-                        allowedPhpVersions: result.settings.allowedPhpVersions || phpVersions.reduce((acc, version) => ({...acc, [version]: true}), {}),
+                        allowedPhpVersions: result.settings.allowedPhpVersions || Object.keys(phpVersions).reduce((acc, version) => ({...acc, [version]: true}), {}),
                     });
                 } else {
                     setSettings({
@@ -20,7 +26,7 @@ const Settings = () => {
                         mysqlPort: '3306',
                         httpdPort: '80',
                         mysqlRootPassword: 'root',
-                        allowedPhpVersions: phpVersions.reduce((acc, version) => ({...acc, [version]: true}), {}),
+                        allowedPhpVersions: Object.keys(phpVersions).reduce((acc, version) => ({...acc, [version]: true}), {}),
                     });
                 }
             } catch (error) {
@@ -33,7 +39,7 @@ const Settings = () => {
 
     const handleChange = (e) => {
         const {name, value, type, checked} = e.target;
-        if (phpVersions.includes(name)) {
+        if (Object.keys(phpVersions).includes(name)) {
             setSettings(prevSettings => ({
                 ...prevSettings,
                 allowedPhpVersions: {
@@ -128,16 +134,16 @@ const Settings = () => {
             </div>
             <div>
                 <label>Allowed PHP Versions:</label>
-                {phpVersions.map(version => (
-                    <div key={version}>
+                {Object.entries(phpVersions).map(([key, value]) => (
+                    <div key={key}>
                         <label>
                             <input
                                 type="checkbox"
-                                name={version}
-                                checked={settings.allowedPhpVersions[version]}
+                                name={key}
+                                checked={settings.allowedPhpVersions[key]}
                                 onChange={handleChange}
                             />
-                            {version.toUpperCase()}
+                            {value}
                         </label>
                     </div>
                 ))}

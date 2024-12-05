@@ -3,7 +3,13 @@ import './VirtualHostForm.css';
 const { ipcRenderer } = window.electron;
 
 const VirtualHostForm = () => {
-    const phpVersions = ['php7.3', 'php7.4', 'php8.1', 'php8.2', 'php8.3'];
+    const phpVersions = {
+        '7.3': 'PHP 7.3',
+        '7.4': 'PHP 7.4',
+        '8.1': 'PHP 8.1',
+        '8.2': 'PHP 8.2',
+        '8.3': 'PHP 8.3'
+    };
 
     const [formData, setFormData] = React.useState({
         name: '',
@@ -69,8 +75,8 @@ const VirtualHostForm = () => {
                     PHP Version:
                     <select name="php_version" value={formData.php_version} onChange={handleChange} required>
                         <option value="">Select PHP Version</option>
-                        {phpVersions.map(version => (
-                            <option key={version} value={version}>{version.toUpperCase()}</option>
+                        {Object.entries(phpVersions).map(([key, value]) => (
+                            <option key={key} value={key}>{value}</option>
                         ))}
                     </select>
                 </label>
