@@ -14,8 +14,14 @@ db.serialize(() => {
         php_version TEXT NOT NULL,
         local_domain TEXT NOT NULL
     )`);
+    db.run(`CREATE TABLE IF NOT EXISTS settings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        redisPort TEXT,
+        mysqlPort TEXT,
+        httpdPort TEXT,
+        allowedPhpVersions TEXT
+    )`);
 });
-
 export const getVirtualHosts = () => {
     return new Promise((resolve, reject) => {
         db.all(`SELECT * FROM virtual_hosts`, (err, rows) => {
@@ -23,6 +29,39 @@ export const getVirtualHosts = () => {
                 reject(err);
             } else {
                 resolve(rows);
+            }
+        });
+    });
+};
+
+export const saveSettings = (settings) => {
+    return new Promise((resolve, reject) => {
+        const { redisPort, mysqlPort, httpdPort, allowedPhpVersions } = settings;
+        const allowedPhpVersionsString = JSON.stringify(allowedPhpVersions);
+        db.run(
+            `INSERT INTO settings (redisPort, mysqlPort, httpdPort, allowedPhpVersions) VALUES (?, ?, ?, ?)`,
+            [redisPort, mysqlPort, httpdPort, allowedPhpVersionsString],
+            function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve({ success: true });
+                }
+            }
+        );
+    });
+};
+
+export const getSettings = () => {
+    return new Promise((resolve, reject) => {
+        db.get(`SELECT * FROM settings ORDER BY id DESC LIMIT 1`, (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                if (row) {
+                    row.allowedPhpVersions = JSON.parse(row.allowedPhpVersions);
+                }
+                resolve(row);
             }
         });
     });

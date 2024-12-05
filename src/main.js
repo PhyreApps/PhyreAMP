@@ -1,5 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
-import { saveVirtualHost, getVirtualHosts, removeVirtualHost } from './database';
+import { saveVirtualHost, getVirtualHosts, removeVirtualHost, saveSettings, getSettings } from './database';
 import { generateHttpdConf } from './virtualHostBuilder';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
@@ -57,6 +57,24 @@ app.whenReady().then(() => {
       createWindow();
     }
   });
+});
+
+ipcMain.handle('save-settings', async (event, settings) => {
+  try {
+    await saveSettings(settings);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('get-settings', async () => {
+  try {
+    const settings = await getSettings();
+    return { success: true, settings };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
 });
 
 ipcMain.handle('check-docker-process', async () => {
