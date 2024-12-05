@@ -1,8 +1,9 @@
 import * as React from 'react';
 import './VirtualHostForm.css';
+import './Modal.css';
 const { ipcRenderer } = window.electron;
 
-const VirtualHostForm = () => {
+const VirtualHostForm = (props) => {
     const phpVersions = {
         '7.3': 'PHP 7.3',
         '7.4': 'PHP 7.4',
@@ -61,46 +62,51 @@ const VirtualHostForm = () => {
         }
     };
 
-    return isLoading ? (
-        <div style={{
-            color: 'white',
-        }}>
-            Creating virtual host...
+    return (
+        <div className="modal">
+            <div className="modal-content">
+                <span className="close" onClick={props.onClose}>&times;</span>
+                {isLoading ? (
+                    <div style={{ color: 'white' }}>
+                        Creating virtual host...
+                    </div>
+                ) : (
+                    <form onSubmit={handleSubmit}>
+                        <div>
+                            <label>
+                                Name:
+                                <input type="text" name="name" value={formData.name} onChange={handleChange} required placeholder="Enter name" />
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                Document Root:
+                                <input type="text" name="document_root" value={formData.document_root} onChange={handleChange} required placeholder="Select document root" />
+                                <button type="button" className="button" onClick={handleFolderSelect}>Select Folder</button>
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                PHP Version:
+                                <select name="php_version" value={formData.php_version} onChange={handleChange} required>
+                                    <option value="">Select PHP Version</option>
+                                    {Object.entries(phpVersions).map(([key, value]) => (
+                                        <option key={key} value={key}>{value}</option>
+                                    ))}
+                                </select>
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                Local Domain:
+                                <input type="text" name="local_domain" value={formData.local_domain} onChange={handleChange} required placeholder="Enter local domain" />
+                            </label>
+                        </div>
+                        <button type="submit" className="button">Create Virtual Host</button>
+                    </form>
+                )}
+            </div>
         </div>
-    ) : (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>
-                    Name:
-                    <input type="text" name="name" value={formData.name} onChange={handleChange} required placeholder="Enter name" />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Document Root:
-                    <input type="text" name="document_root" value={formData.document_root} onChange={handleChange} required placeholder="Select document root" />
-                    <button type="button" className="button" onClick={handleFolderSelect}>Select Folder</button>
-                </label>
-            </div>
-            <div>
-                <label>
-                    PHP Version:
-                    <select name="php_version" value={formData.php_version} onChange={handleChange} required>
-                        <option value="">Select PHP Version</option>
-                        {Object.entries(phpVersions).map(([key, value]) => (
-                            <option key={key} value={key}>{value}</option>
-                        ))}
-                    </select>
-                </label>
-            </div>
-            <div>
-                <label>
-                    Local Domain:
-                    <input type="text" name="local_domain" value={formData.local_domain} onChange={handleChange} required placeholder="Enter local domain" />
-                </label>
-            </div>
-            <button type="submit" className="button">Create Virtual Host</button>
-        </form>
     );
 };
 

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import './VirtualHostTable.css';
 import PHPIcon from "../Icons/PHPIcon.jsx";
+import VirtualHostForm from "./VirtualHostForm.jsx";
 
 const columnOptions = [
     { key: 'application', label: 'Application' },
@@ -58,8 +59,19 @@ const VirtualHostTable = () => {
         );
     };
 
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+
     return (
         <div className="virtual-host-table-wrapper">
+            <div>
+                <button onClick={openModal}>
+                    Create Virtual Host
+                </button>
+                {isModalOpen && <VirtualHostForm onClose={closeModal} />}
+            </div>
             <div className="search-and-columns">
                 <input
                     type="text"
