@@ -29,19 +29,34 @@ const Settings = () => {
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setSettings(prevSettings => ({
-            ...prevSettings,
-            [name]: type === 'checkbox' ? checked : value
-        }));
+        if (phpVersions.includes(name)) {
+            setSettings(prevSettings => ({
+                ...prevSettings,
+                allowedPhpVersions: {
+                    ...prevSettings.allowedPhpVersions,
+                    [name]: checked
+                }
+            }));
+        } else {
+            setSettings(prevSettings => ({
+                ...prevSettings,
+                [name]: type === 'checkbox' ? checked : value
+            }));
+        }
     };
 
     const handleSave = async () => {
         try {
             const result = await window.electron.ipcRenderer.invoke('save-settings', settings);
             if (result.success) {
-                alert('Settings saved successfully!');
-            } else {
-                alert(`Error saving settings: ${result.error}`);
+                await window.electron.ipcRenderer.invoke('rebuild-containers').then((result) => {
+                    if (result.success) {
+                        alert('Settings saved successfully!');
+                        alert('Containers rebuilt successfully!');
+                    } else {
+                        alert(`Error rebuilding containers: ${result.error}`);
+                    }
+                });
             }
         } catch (error) {
             alert(`Error saving settings: ${error.message}`);
