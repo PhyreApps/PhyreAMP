@@ -4,6 +4,8 @@ import './DockerControl.css';
 const DockerControl = () => {
     const [status, setStatus] = React.useState('');
     const [httpdPort, setHttpdPort] = React.useState('80');
+    const [isStopping, setIsStopping] = React.useState(false);
+    const [isRestarting, setIsRestarting] = React.useState(false);
     const [dockerRunning, setDockerRunning] = React.useState(false);
 
 
@@ -70,7 +72,18 @@ const DockerControl = () => {
             }
         }
         try {
-            const result = await window.electron.ipcRenderer.invoke(command);
+            let result;
+            if (command === 'stop-all-containers') {
+                setIsStopping(true);
+                result = await window.electron.ipcRenderer.invoke(command);
+                setIsStopping(false);
+            } else if (command === 'restart-all-containers') {
+                setIsRestarting(true);
+                result = await window.electron.ipcRenderer.invoke(command);
+                setIsRestarting(false);
+            } else {
+                result = await window.electron.ipcRenderer.invoke(command);
+            }
             if (result && result.success) {
                 alert(result.message);
                 if (command === 'all-containers-status') {
@@ -104,11 +117,19 @@ const DockerControl = () => {
 
             </div>
             <div className="buttons">
-                {!dockerRunning && <button className="button" onClick={() => executeCommand('start-all-containers')}>Start</button>}
-                {status === 'running' || dockerRunning && (
+                {!dockerRunning && !isStopping && !isRestarting && (
+                    <button className="button" onClick={() => executeCommand('start-all-containers')}>
+                        {isStopping ? 'Stopping...' : isRestarting ? 'Restarting...' : 'Start'}
+                    </button>
+                )}
+                {status === 'running' || (dockerRunning) && (
                     <>
-                        <button className="button" onClick={() => executeCommand('stop-all-containers')}>Stop</button>
-                        <button className="restart-button" onClick={() => executeCommand('restart-all-containers')}>Restart</button>
+                        <button className="button" onClick={() => executeCommand('stop-all-containers')}>
+                            {isStopping ? 'Stopping...' : 'Stop'}
+                        </button>
+                        <button className="restart-button" onClick={() => executeCommand('restart-all-containers')}>
+                            {isRestarting ? 'Restarting...' : 'Restart'}
+                        </button>
                     </>
                 )}
             </div>
