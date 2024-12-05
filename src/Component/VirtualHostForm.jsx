@@ -85,7 +85,7 @@ const VirtualHostForm = (props) => {
                 <span className="close" onClick={props.onClose}>&times;</span>
                 {isLoading ? (
                     <div style={{ color: 'white' }}>
-                        Creating virtual host...
+                        {props.host ? 'Editing virtual host...' : 'Creating virtual host...'}
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit}>
@@ -119,7 +119,9 @@ const VirtualHostForm = (props) => {
                                 <input type="text" name="local_domain" value={formData.local_domain} onChange={handleChange} required placeholder="Enter local domain" />
                             </label>
                         </div>
-                        <button type="submit" className="button">Create Virtual Host</button>
+                        <button type="submit" className="button">
+                            {props.host ? 'Update Virtual Host' : 'Create Virtual Host'}
+                        </button>
                     </form>
                 )}
             </div>
