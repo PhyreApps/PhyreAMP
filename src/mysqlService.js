@@ -52,7 +52,7 @@ const createMysqlContainer = async () => {
     } catch (error) {
         if (error.statusCode === 404) {
             try {
-                await docker.createContainer({
+                const container = await docker.createContainer({
                     Image: 'mysql:8.0',
                     name: 'phyreamp-mysql',
                     Env: [
@@ -69,7 +69,8 @@ const createMysqlContainer = async () => {
                         Binds: [path.resolve(__dirname, '../docker/mysql-data') + ':/var/lib/mysql']
                     }
                 });
-                return { success: true, message: 'MySQL container created successfully.' };
+                await container.start();
+                return { success: true, message: 'MySQL container created and started successfully.' };
             } catch (createError) {
                 return { success: false, error: `Error creating MySQL container: ${createError.message}` };
             }

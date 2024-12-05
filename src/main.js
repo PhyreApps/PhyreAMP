@@ -176,8 +176,19 @@ ipcMain.handle('all-containers-status', async (event) => {
 
 ipcMain.handle('rebuild-containers', async (event) => {
 
-  await deleteMysqlContainer();
 
+
+  const { getNetworkStatus, createNetwork } = require('./dockerService');
+
+  const networkStatus = await getNetworkStatus('phyreamp-network');
+  if (!networkStatus.success) {
+    const createNetworkResult = await createNetwork('phyreamp-network');
+    if (!createNetworkResult.success) {
+      return { success: false, error: createNetworkResult.error };
+    }
+  }
+
+  await deleteMysqlContainer();
   return await createMysqlContainer();
 
 })

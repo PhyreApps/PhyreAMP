@@ -41,7 +41,42 @@ const getContainerStatus = async (containerName) => {
     }
 };
 
+const createNetwork = async (networkName) => {
+    try {
+        const network = await docker.createNetwork({
+            Name: networkName,
+            Driver: 'bridge'
+        });
+        return { success: true, message: `Network ${networkName} created successfully.` };
+    } catch (error) {
+        return { success: false, error: `Error creating network ${networkName}: ${error.message}` };
+    }
+};
+
+const removeNetwork = async (networkName) => {
+    try {
+        const network = docker.getNetwork(networkName);
+        await network.remove();
+        return { success: true, message: `Network ${networkName} removed successfully.` };
+    } catch (error) {
+        return { success: false, error: `Error removing network ${networkName}: ${error.message}` };
+    }
+};
+
+const getNetworkStatus = async (networkName) => {
+    try {
+        const network = docker.getNetwork(networkName);
+        const data = await network.inspect();
+        return { success: true, message: `Network ${networkName} is ${data ? 'available' : 'not available'}.` };
+    } catch (error) {
+        return { success: false, error: `Error fetching status for network ${networkName}: ${error.message}` };
+    }
+};
+
 module.exports = {
+    createNetwork,
+    removeNetwork,
+    getNetworkStatus,
     startContainer,
     stopContainer,
     restartContainer,
