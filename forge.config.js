@@ -17,8 +17,19 @@ module.exports = {
     },
     {
       name: '@electron-forge/maker-deb',
-      config: {},
+      config: {
+        options: {
+          icon: '/images/icons/icon.png'
+        }
+      }
     },
+    // {
+    //   // Path to the icon to use for the app in the DMG window
+    //   name: '@electron-forge/maker-dmg',
+    //   config: {
+    //     icon: '/images/icons/icon.png'
+    //   }
+    // },
     {
       name: '@electron-forge/maker-rpm',
       config: {},

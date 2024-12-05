@@ -37,6 +37,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@electron-forge/maker-dmg": "^7.6.0",
     "dockerode": "^4.0.2",
     "electron-squirrel-startup": "^1.0.1",
     "react": "^18.3.1",
