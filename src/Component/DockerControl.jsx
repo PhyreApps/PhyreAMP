@@ -115,11 +115,11 @@ const DockerControl = () => {
         <div className="docker-control">
             <div className="status">
                 <div>
-                    <div>HTTPD Status: <span className={statuses.httpd.includes('running') ? 'status-success' : ''}>{statuses.httpd}</span></div>
-                    <div>MySQL Status: <span className={statuses.mysql.includes('running') ? 'status-success' : ''}>{statuses.mysql}</span></div>
-                    <div>Redis Status: <span className={statuses.redis.includes('running') ? 'status-success' : ''}>{statuses.redis}</span></div>
-                    <div>phpMyAdmin Status: <span className={statuses.phpmyadmin.includes('running') ? 'status-success' : ''}>{statuses.phpmyadmin}</span></div>
-                    <div>PHP-FPM Status: <span className={statuses.phpfpms.includes('running') ? 'status-success' : ''}>{statuses.phpfpms}</span></div>
+                    <div>HTTPD Status: <span className={statuses.httpd.includes('Running') ? 'status-success' : ''}>{statuses.httpd}</span></div>
+                    <div>MySQL Status: <span className={statuses.mysql.includes('Running') ? 'status-success' : ''}>{statuses.mysql}</span></div>
+                    <div>Redis Status: <span className={statuses.redis.includes('Running') ? 'status-success' : ''}>{statuses.redis}</span></div>
+                    <div>phpMyAdmin Status: <span className={statuses.phpmyadmin.includes('Running') ? 'status-success' : ''}>{statuses.phpmyadmin}</span></div>
+                    <div>PHP-FPM Status: <span className={statuses.phpfpms.includes('Running') ? 'status-success' : ''}>{statuses.phpfpms}</span></div>
                 </div>
 
                 {dockerRunning ? <>
