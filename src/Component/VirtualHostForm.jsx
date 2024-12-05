@@ -16,7 +16,9 @@ const VirtualHostForm = (props) => {
         name: props.host ? props.host.name : '',
         document_root: props.host ? props.host.document_root : '',
         php_version: props.host ? props.host.php_version : '',
-        local_domain: props.host ? props.host.local_domain : ''
+        local_domain: props.host ? props.host.local_domain : '',
+        project_path: props.host ? props.host.project_path : '',
+        public_folder: props.host ? props.host.public_folder : ''
     }));
 
     const [isLoading, setIsLoading] = React.useState(false);
@@ -89,10 +91,26 @@ const VirtualHostForm = (props) => {
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit}>
+
                         <div>
                             <label>
                                 Name:
-                                <input type="text" name="name" value={formData.name} onChange={handleChange} required placeholder="Enter name" />
+                                <input type="text" name="name" value={formData.name} onChange={handleChange} required
+                                       placeholder="Enter name"/>
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                Project Path:
+                                <input type="text" name="project_path" value={formData.project_path}
+                                       onChange={handleChange} required placeholder="Enter project path"/>
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                Public Folder:
+                                <input type="text" name="public_folder" value={formData.public_folder}
+                                       onChange={handleChange} required placeholder="Enter public folder"/>
                             </label>
                         </div>
                         <div>
@@ -105,7 +123,8 @@ const VirtualHostForm = (props) => {
                                 alignItems: 'center',
                                 gap: '10px'
                             }}>
-                                <input type="text" name="document_root" value={formData.document_root}  onChange={handleChange} required placeholder="Select document root"/>
+                                <input type="text" name="document_root" value={formData.document_root}
+                                       onChange={handleChange} required placeholder="Select document root"/>
                                 <button type="button"
                                         style={{
                                             width: '220px',
@@ -119,7 +138,7 @@ const VirtualHostForm = (props) => {
                                 PHP Version:
                                 <select name="php_version" value={formData.php_version} onChange={handleChange}
                                         required>
-                                <option value="">Select PHP Version</option>
+                                    <option value="">Select PHP Version</option>
                                     {Object.entries(phpVersions).map(([key, value]) => (
                                         <option key={key} value={key}>{value}</option>
                                     ))}
@@ -129,7 +148,8 @@ const VirtualHostForm = (props) => {
                         <div>
                             <label>
                                 Local Domain:
-                                <input type="text" name="local_domain" value={formData.local_domain} onChange={handleChange} required placeholder="Enter local domain" />
+                                <input type="text" name="local_domain" value={formData.local_domain}
+                                       onChange={handleChange} required placeholder="Enter local domain"/>
                             </label>
                         </div>
                         <button type="submit" className="button">
