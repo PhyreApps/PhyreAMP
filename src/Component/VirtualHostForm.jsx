@@ -62,9 +62,24 @@ const VirtualHostForm = (props) => {
         }
     };
 
+    const modalRef = React.useRef(null);
+
+    React.useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (modalRef.current && !modalRef.current.contains(event.target)) {
+                props.onClose();
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [props]);
+
     return (
         <div className="modal">
-            <div className="modal-content">
+            <div className="modal-content" ref={modalRef}>
                 <span className="close" onClick={props.onClose}>&times;</span>
                 {isLoading ? (
                     <div style={{ color: 'white' }}>
