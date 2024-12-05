@@ -56,6 +56,7 @@ const createWindow = () => {
     height: 900,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+      sandbox: true,
     },
   });
 

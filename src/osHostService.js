@@ -1,8 +1,8 @@
 import fs from 'fs';
 import os from 'os';
 
-const HOSTS_FILE_PATH = process.platform === 'win32' 
-    ? 'C:\\Windows\\System32\\drivers\\etc\\hosts' 
+const HOSTS_FILE_PATH = process.platform === 'win32'
+    ? 'C:\\Windows\\System32\\drivers\\etc\\hosts'
     : '/etc/hosts';
 const START_MARKER = '# Start PhyreAMP Virtual Hosts';
 const END_MARKER = '# End PhyreAMP Virtual Hosts';
@@ -38,12 +38,25 @@ const addVirtualHostsToHostsFile = (virtualHosts) => {
     const hosts = readHostsFile().split(os.EOL);
     const existingEntries = extractVirtualHostEntries(hosts);
 
-    const newEntries = virtualHosts.map(host => `${host.local_domain} 127.0.0.1`);
-    const updatedHosts = [
-        ...hosts.slice(0, hosts.indexOf(START_MARKER) + 1),
-        ...newEntries,
-        ...hosts.slice(hosts.indexOf(END_MARKER))
-    ];
+    const newEntries = virtualHosts.map(host => `127.0.0.1 ${host.local_domain}`);
+    const startIndex = hosts.indexOf(START_MARKER);
+    const endIndex = hosts.indexOf(END_MARKER);
+
+    let updatedHosts;
+    if (startIndex !== -1 && endIndex !== -1 && startIndex < endIndex) {
+        updatedHosts = [
+            ...hosts.slice(0, startIndex + 1),
+            ...newEntries,
+            ...hosts.slice(endIndex)
+        ];
+    } else {
+        updatedHosts = [
+            ...hosts,
+            START_MARKER,
+            ...newEntries,
+            END_MARKER
+        ];
+    }
 
     writeHostsFile(updatedHosts.join(os.EOL));
 };
@@ -55,8 +68,8 @@ const removeVirtualHostsFromHostsFile = () => {
 
     if (startIndex !== -1 && endIndex !== -1 && startIndex < endIndex) {
         const updatedHosts = [
-            ...hosts.slice(0, startIndex + 1),
-            ...hosts.slice(endIndex)
+            ...hosts.slice(0, startIndex),
+            ...hosts.slice(endIndex + 1)
         ];
         writeHostsFile(updatedHosts.join(os.EOL));
     }
