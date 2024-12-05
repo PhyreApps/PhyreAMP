@@ -1,11 +1,5 @@
 import fs from 'fs';
 import os from 'os';
-import path from 'path';
-import sudo from 'sudo-prompt';
-
-const SUDO_OPTIONS = {
-    name: 'PhyreAMP',
-};
 
 const HOSTS_FILE_PATH = process.platform === 'win32'
     ? 'C:\\Windows\\System32\\drivers\\etc\\hosts'
@@ -13,40 +7,18 @@ const HOSTS_FILE_PATH = process.platform === 'win32'
 const START_MARKER = '# Start PhyreAMP Virtual Hosts';
 const END_MARKER = '# End PhyreAMP Virtual Hosts';
 
-const readHostsFile = async() => {
+const readHostsFile = () => {
     try {
-        return new Promise(async (resolve, reject) => {
-            await sudo.exec(`cat ${HOSTS_FILE_PATH}`, SUDO_OPTIONS, (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`Error reading hosts file: ${stderr}`);
-                    reject(new Error('Permission denied. Please run the application with elevated privileges.'));
-                } else {
-                    resolve(stdout);
-                }
-            });
-        });
+        return fs.readFileSync(HOSTS_FILE_PATH, 'utf8');
     } catch (error) {
         console.error(`Error reading hosts file: ${error.message}`);
         throw new Error('Permission denied. Please run the application with elevated privileges.');
     }
 };
 
-const writeHostsFile = async(content) => {
+const writeHostsFile = (content) => {
     try {
-        return new Promise((resolve, reject) => {
-            const tempFilePath = path.join(os.tmpdir(), 'hosts.tmp');
-            fs.writeFileSync(tempFilePath, content, 'utf8');
-
-            const command = `mv ${tempFilePath} ${HOSTS_FILE_PATH}`;
-            sudo.exec(command, SUDO_OPTIONS, (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`Error writing to hosts file: ${stderr}`);
-                    reject(new Error('Permission denied. Please run the application with elevated privileges.'));
-                } else {
-                    resolve();
-                }
-            });
-        });
+        fs.writeFileSync(HOSTS_FILE_PATH, content, 'utf8');
     } catch (error) {
         console.error(`Error writing to hosts file: ${error.message}`);
         throw new Error('Permission denied. Please run the application with elevated privileges.');
@@ -62,10 +34,9 @@ const extractVirtualHostEntries = (hosts) => {
     return [];
 };
 
-const addVirtualHostsToHostsFile = async (virtualHosts) => {
-
-    const hostFileContent = await readHostsFile();
-    const hosts = hostFileContent.split(os.EOL);
+const addVirtualHostsToHostsFile = (virtualHosts) => {
+    const hosts = readHostsFile().split(os.EOL);
+    const existingEntries = extractVirtualHostEntries(hosts);
 
     const newEntries = virtualHosts.map(host => `127.0.0.1 ${host.local_domain}`);
     const startIndex = hosts.indexOf(START_MARKER);
@@ -87,14 +58,11 @@ const addVirtualHostsToHostsFile = async (virtualHosts) => {
         ];
     }
 
-    await writeHostsFile(updatedHosts.join(os.EOL));
+    writeHostsFile(updatedHosts.join(os.EOL));
 };
 
-const removeVirtualHostsFromHostsFile = async() => {
-
-    const hostFileContent = await readHostsFile();
-    const hosts = hostFileContent.split(os.EOL);
-
+const removeVirtualHostsFromHostsFile = () => {
+    const hosts = readHostsFile().split(os.EOL);
     const startIndex = hosts.indexOf(START_MARKER);
     const endIndex = hosts.indexOf(END_MARKER);
 
@@ -103,7 +71,7 @@ const removeVirtualHostsFromHostsFile = async() => {
             ...hosts.slice(0, startIndex),
             ...hosts.slice(endIndex + 1)
         ];
-        await writeHostsFile(updatedHosts.join(os.EOL));
+        writeHostsFile(updatedHosts.join(os.EOL));
     }
 };
 
