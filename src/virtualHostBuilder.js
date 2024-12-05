@@ -37,13 +37,11 @@ const generateHttpdConf = async () => {
             configContent += `
 <VirtualHost *:80>
     ServerName ${host.local_domain}
-    DocumentRoot "${host.document_root}"
-    <Directory "${host.document_root}">
+    DocumentRoot "/var/www/html/${host.local_domain}/"
+    <Directory "/var/www/html/${host.local_domain}/">
         AllowOverride All
         Require all granted
-    </Directory>
-    ErrorLog "logs/${host.name}-error.log"
-    CustomLog "logs/${host.name}-access.log" common
+    </Directory> 
 </VirtualHost>
 `;
         });

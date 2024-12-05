@@ -80,7 +80,7 @@ const createHttpdContainer = async () => {
                 const settings = await getSettings();
 
                 const virtualHosts = await getVirtualHosts();
-                const binds = virtualHosts.map(host => `${host.document_root}:/var/www/html/${host.name}`);
+                const binds = virtualHosts.map(host => `${host.document_root}:/var/www/html/${host.local_domain}`);
 
                 const defaultHttpdConf = path.join(__dirname, 'apache/httpd.conf');
                 const defaultVirtualHostsConf = path.join(__dirname, 'apache/virtualhosts.conf');
@@ -91,6 +91,10 @@ const createHttpdContainer = async () => {
                     binds.push(`${defaultVirtualHostsConf}:/usr/local/apache2/conf/virtualhosts.conf`);
                 }
 
+                const extraHosts = [
+                    "host.docker.internal:host-gateway"
+                ];
+
                 const container = await docker.createContainer({
                     Image: 'httpd:latest',
                     name: 'phyreamp-httpd',
@@ -99,7 +103,8 @@ const createHttpdContainer = async () => {
                         PortBindings: {
                             '80/tcp': [{ HostPort: (settings.httpdPort || '80').toString() }]
                         },
-                        Binds: binds
+                        Binds: binds,
+                        ExtraHosts: extraHosts
                     }
                 });
                 await container.start();
