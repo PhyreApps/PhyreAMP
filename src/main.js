@@ -21,7 +21,9 @@ import {
   createRedisContainer,
   deleteRedisContainer
 } from './redisService';
-import {createHttpdContainer, deleteHttpdContainer, startHttpdContainer} from "./httpdService";
+import { createHttpdContainer, deleteHttpdContainer, startHttpdContainer } from "./httpdService";
+const Docker = require('dockerode');
+const docker = new Docker();
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -246,18 +248,37 @@ ipcMain.handle('rebuild-containers', async (event) => {
     startRedisContainer();
   });
 
-  await rebuildVirtualHostContainers();
+  return await rebuildVirtualHostContainers();
 
 })
 
-async function rebuildVirtualHostContainers()
-{
+async function rebuildVirtualHostContainers() {
   const virtualHosts = await getVirtualHosts();
   const phpVersions = [...new Set(virtualHosts.map(host => host.php_version))];
 
-  console.log(virtualHosts);
-  console.log(phpVersions);
 
+  // Get all existing PHP-FPM containers
+  const containers = await docker.listContainers({ all: true });
+  const phpFpmContainers = containers.filter(container => container.Names.some(name => name.includes('phyreamp-php')));
+
+  // Determine which containers to delete
+  const containersToDelete = phpFpmContainers.filter(container => {
+    const version = container.Names[0].match(/phyreamp-php(\d+)/);
+    return version && !phpVersions.includes(version[1].replace(/(\d)(\d)/, '$1.$2'));
+  });
+
+  // Delete old PHP-FPM containers
+  for (const container of containersToDelete) {
+
+    const containerName = container.Names[0].replace('/', '');
+
+    const dockerContainer = docker.getContainer(containerName);
+    await dockerContainer.remove({ force: true }).then((log) => {
+      console.log(`Deleted old container: ${containerName}`, log);
+    });
+  }
+
+  // Create or recreate necessary PHP-FPM containers
   for (const phpVersion of phpVersions) {
     await deletePhpFpmContainer(phpVersion).then((log) => {
       console.log(log);
