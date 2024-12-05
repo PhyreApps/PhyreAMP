@@ -60,8 +60,12 @@ const VirtualHostTable = () => {
     };
 
     const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [editingHost, setEditingHost] = React.useState(null);
 
-    const openModal = () => setIsModalOpen(true);
+    const openModal = (host = null) => {
+        setEditingHost(host);
+        setIsModalOpen(true);
+    };
     const closeModal = () => setIsModalOpen(false);
 
     return (
@@ -70,7 +74,7 @@ const VirtualHostTable = () => {
                 <button  className="button" onClick={openModal}>
                     Create Virtual Host
                 </button>
-                {isModalOpen && <VirtualHostForm onClose={closeModal} />}
+                {isModalOpen && <VirtualHostForm host={editingHost} onClose={closeModal} />}
             </div>
             <div className="search-and-columns">
                 <input
@@ -132,7 +136,7 @@ const VirtualHostTable = () => {
                                         display: 'flex',
                                         gap: '10px'
                                     }}>
-                                    <button className="edit-button" onClick={() => handleEdit(host.id)}>
+                                    <button className="edit-button" onClick={() => openModal(host)}>
                                         Edit
                                     </button>
                                     <button className="delete-button" onClick={() => handleRemove(host.id)}>

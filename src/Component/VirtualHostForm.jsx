@@ -12,12 +12,12 @@ const VirtualHostForm = (props) => {
         '8.3': 'PHP 8.3'
     };
 
-    const [formData, setFormData] = React.useState({
-        name: '',
-        document_root: '',
-        php_version: '',
-        local_domain: ''
-    });
+    const [formData, setFormData] = React.useState(() => ({
+        name: props.host ? props.host.name : '',
+        document_root: props.host ? props.host.document_root : '',
+        php_version: props.host ? props.host.php_version : '',
+        local_domain: props.host ? props.host.local_domain : ''
+    }));
 
     const [isLoading, setIsLoading] = React.useState(false);
 
@@ -52,10 +52,12 @@ const VirtualHostForm = (props) => {
             alert('Please enter a valid domain format.');
             return;
         }
-        const result = await ipcRenderer.invoke('save-virtual-host', formData);
+        const result = props.host
+            ? await ipcRenderer.invoke('update-virtual-host', { ...formData, id: props.host.id })
+            : await ipcRenderer.invoke('save-virtual-host', formData);
         if (result.success) {
             await window.electron.ipcRenderer.invoke('window-reload');
-            alert('Virtual host saved successfully!');
+            alert(`Virtual host ${props.host ? 'updated' : 'saved'} successfully!`);
         } else {
             alert(`Error saving virtual host: ${result.error}`);
             setIsLoading(false);

@@ -1,5 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
-import { saveVirtualHost, getVirtualHosts, removeVirtualHost, saveSettings, getSettings } from './database';
+import { saveVirtualHost, getVirtualHosts, removeVirtualHost, saveSettings, getSettings, updateVirtualHost } from './database';
 import { generateHttpdConf } from './virtualHostBuilder';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
@@ -156,6 +156,16 @@ ipcMain.handle('get-virtual-hosts', async () => {
   }
 });
 
+ipcMain.handle('update-virtual-host', async (event, formData) => {
+  try {
+    const { id, name, document_root, php_version, local_domain } = formData;
+    await updateVirtualHost(id, { name, document_root, php_version, local_domain });
+    await rebuildVirtualHostContainers();
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
 ipcMain.handle('remove-virtual-host', async (event, id) => {
   try {
     await removeVirtualHost(id);
