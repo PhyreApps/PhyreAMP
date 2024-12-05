@@ -16,27 +16,17 @@ const readHostsFile = () => {
     }
 };
 
-const writeHostsFile = (content) => {
+const writeHostsFile = async (content) => {
     try {
-        fs.writeFileSync(HOSTS_FILE_PATH, content, 'utf8');
+        await fs.writeFileSync(HOSTS_FILE_PATH, content, 'utf8');
     } catch (error) {
         console.error(`Error writing to hosts file: ${error.message}`);
         throw new Error('Permission denied. Please run the application with elevated privileges.');
     }
 };
 
-const extractVirtualHostEntries = (hosts) => {
-    const startIndex = hosts.indexOf(START_MARKER);
-    const endIndex = hosts.indexOf(END_MARKER);
-    if (startIndex !== -1 && endIndex !== -1 && startIndex < endIndex) {
-        return hosts.slice(startIndex + 1, endIndex);
-    }
-    return [];
-};
-
-const addVirtualHostsToHostsFile = (virtualHosts) => {
+const addVirtualHostsToHostsFile = async(virtualHosts) => {
     const hosts = readHostsFile().split(os.EOL);
-    const existingEntries = extractVirtualHostEntries(hosts);
 
     const newEntries = virtualHosts.map(host => `127.0.0.1 ${host.local_domain}`);
     const startIndex = hosts.indexOf(START_MARKER);
@@ -58,10 +48,10 @@ const addVirtualHostsToHostsFile = (virtualHosts) => {
         ];
     }
 
-    writeHostsFile(updatedHosts.join(os.EOL));
+    await writeHostsFile(updatedHosts.join(os.EOL));
 };
 
-const removeVirtualHostsFromHostsFile = () => {
+const removeVirtualHostsFromHostsFile = async () => {
     const hosts = readHostsFile().split(os.EOL);
     const startIndex = hosts.indexOf(START_MARKER);
     const endIndex = hosts.indexOf(END_MARKER);
@@ -71,7 +61,7 @@ const removeVirtualHostsFromHostsFile = () => {
             ...hosts.slice(0, startIndex),
             ...hosts.slice(endIndex + 1)
         ];
-        writeHostsFile(updatedHosts.join(os.EOL));
+        await writeHostsFile(updatedHosts.join(os.EOL));
     }
 };
 
