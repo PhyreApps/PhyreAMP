@@ -41,6 +41,23 @@ const createRedisContainer = async () => {
     } catch (error) {
         if (error.statusCode === 404) {
             try {
+                await docker.pull('redis:latest', (err, stream) => {
+                    if (err) {
+                        throw new Error(`Error pulling Redis image: ${err.message}`);
+                    }
+                    docker.modem.followProgress(stream, onFinished, onProgress);
+
+                    function onFinished(err, output) {
+                        if (err) {
+                            throw new Error(`Error pulling Redis image: ${err.message}`);
+                        }
+                    }
+
+                    function onProgress(event) {
+                        console.log(event);
+                    }
+                });
+
                 const container = await docker.createContainer({
                     Image: 'redis:latest',
                     name: 'phyreamp-redis',
