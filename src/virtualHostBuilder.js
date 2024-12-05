@@ -15,9 +15,10 @@ const generateHttpdConf = async () => {
     await addVirtualHostsToHostsFile(virtualHosts);
 
     // Apache working directory
-    const apacheDir = path.join(__dirname, 'apache');
-    if (!fs.existsSync(apacheDir)) {
-        fs.mkdirSync(apacheDir);
+    const userDataPath = app.getPath('userData');
+    const apacheDataPath = path.join(userDataPath, 'apache');
+    if (!fs.existsSync(apacheDataPath)) {
+        fs.mkdirSync(apacheDataPath, { recursive: true });
     }
 
     // Read default HTTPD configuration file
@@ -27,7 +28,7 @@ const generateHttpdConf = async () => {
     const defaultConfig = fs.readFileSync(defaultConfigPath, 'utf8');
 
     // Write default configuration to new file
-    const newConfigPath = path.join(__dirname, 'apache/httpd.conf');
+    const newConfigPath = path.join(apacheDataPath, 'httpd.conf');
     fs.writeFileSync(newConfigPath, defaultConfig);
     console.log('httpd.conf file generated successfully.');
 
@@ -53,7 +54,7 @@ const generateHttpdConf = async () => {
 `;
         });
 
-        const configPath = path.join(__dirname, 'apache/virtualhosts.conf');
+        const configPath = path.join(apacheDataPath, 'virtualhosts.conf');
 
         console.log('configPath:', configPath);
 

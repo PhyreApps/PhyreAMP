@@ -3,6 +3,7 @@ import fs from "fs";
 const Docker = require('dockerode');
 const path = require("node:path");
 import { getSettings, getVirtualHosts } from './database.js';
+import {app} from "electron";
 var docker = new Docker();
 
 const startHttpdContainer = async () => {
@@ -82,12 +83,17 @@ const createHttpdContainer = async () => {
                 const virtualHosts = await getVirtualHosts();
                 const binds = virtualHosts.map(host => `${host.project_path}:/var/www/html/${host.local_domain}`);
 
-                const defaultHttpdConf = path.join(__dirname, 'apache/httpd.conf');
+                const userDataPath = app.getPath('userData');
+                const apacheDataPath = path.join(userDataPath, 'apache');
+                if (!fs.existsSync(apacheDataPath)) {
+                    fs.mkdirSync(apacheDataPath, { recursive: true });
+                }
+                const defaultHttpdConf = path.join(apacheDataPath, 'httpd.conf');
                 if (fs.existsSync(defaultHttpdConf)) {
                     binds.push(`${defaultHttpdConf}:/usr/local/apache2/conf/httpd.conf`);
                 }
 
-                const defaultVirtualHostsConf = path.join(__dirname, 'apache/virtualhosts.conf');
+                const defaultVirtualHostsConf = path.join(apacheDataPath, 'apache/virtualhosts.conf');
                 if (fs.existsSync(defaultVirtualHostsConf)) {
                     binds.push(`${defaultVirtualHostsConf}:/usr/local/apache2/conf/virtualhosts.conf`);
                 }
