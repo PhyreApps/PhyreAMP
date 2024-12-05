@@ -2,9 +2,9 @@ services:
   # Apache and PHP service
   httpd:
     image: httpd:latest
-    container_name: phyrexamp-httpd
+    container_name: phyreamp-httpd
     networks:
-      - phyrexamp-network
+      - phyreamp-network
     ports:
       - "80:80"
     volumes:
@@ -13,7 +13,7 @@ services:
       - /Users/bobi/PhpstormProjects/microweber/:/var/www/html/bgmanager-dev/
 
   php83-fpm:
-    container_name: phyrexamp-php83-fpm
+    container_name: phyreamp-php83-fpm
     build:
       context: .
       dockerfile: docker/php/Dockerfile
@@ -24,21 +24,21 @@ services:
       - /Users/bobi/PhpstormProjects/microweber/:/var/www/html/bgmanager-dev/
 
     networks:
-      - phyrexamp-network
+      - phyreamp-network
 
   # MySQL service
   mysql:
     image: mysql:8.0
     networks:
-      - phyrexamp-network
-    container_name: phyrexamp-mysql
+      - phyreamp-network
+    container_name: phyreamp-mysql
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: phyrexamp
-      MYSQL_USER: phyrexamp
-      MYSQL_PASSWORD: phyrexamp
+      MYSQL_DATABASE: phyreamp
+      MYSQL_USER: phyreamp
+      MYSQL_PASSWORD: phyreamp
     volumes:
       - ./docker/mysql-data:/var/lib/mysql
 
@@ -46,8 +46,8 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     networks:
-      - phyrexamp-network
-    container_name: phyrexamp-phpmyadmin
+      - phyreamp-network
+    container_name: phyreamp-phpmyadmin
     ports:
       - "8081:80"
     environment:
@@ -58,4 +58,4 @@ services:
 
 # Define networks
 networks:
-  phyrexamp-network:
+  phyreamp-network:

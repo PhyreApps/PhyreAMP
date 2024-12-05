@@ -33,7 +33,7 @@ const DockerControl = () => {
 
         const fetchDockerStatus = async () => {
             await checkDockerRunning();
-            const result = await window.electron.ipcRenderer.invoke('status-container', 'phyrexamp-phpmyadmin');
+            const result = await window.electron.ipcRenderer.invoke('status-container', 'phyreamp-phpmyadmin');
             if (result.success) {
                 setStatus(result.message);
             } else {

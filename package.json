@@ -1,8 +1,8 @@
 {
-  "name": "phyrexamp",
-  "productName": "PhyreXAMP",
+  "name": "phyreamp",
+  "productName": "PhyreAMP",
   "version": "1.0.0",
-  "description": "PhyreXAMP - A simple XAMPP alternative",
+  "description": "PhyreAMP - A simple XAMPP alternative",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
