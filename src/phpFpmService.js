@@ -1,4 +1,5 @@
 const Docker = require('dockerode');
+const path = require('path');
 var docker = new Docker();
 
 const createPhpFpmContainer = async (phpVersion) => {
@@ -38,7 +39,7 @@ const createPhpFpmContainer = async (phpVersion) => {
                     HostConfig: {
                         NetworkMode: 'phyreamp-network',
                         Binds: [
-                            './docker/html:/var/www/html'
+                            path.resolve(__dirname, '../docker/html') + ':/var/www/html'
                         ]
                     }
                 });

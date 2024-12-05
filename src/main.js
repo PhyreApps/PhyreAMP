@@ -265,9 +265,9 @@ ipcMain.handle('rebuild-containers', async (event) => {
   return await createHttpdContainer().then((log) => {
     console.log(log);
     startHttpdContainer();
-  });
 
-  return { success: true };
+    return { success: true, message: 'Containers rebuilt successfully.' };
+  });
 
 
 })

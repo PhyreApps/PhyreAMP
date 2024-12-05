@@ -72,7 +72,7 @@ const DockerControl = () => {
         }
         try {
             const result = await window.electron.ipcRenderer.invoke(command);
-            if (result.success) {
+            if (result && result.success) {
                 alert(result.message);
                 if (command === 'all-containers-status') {
                     setStatus(result.message);
