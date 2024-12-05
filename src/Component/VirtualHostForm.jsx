@@ -14,7 +14,6 @@ const VirtualHostForm = (props) => {
 
     const [formData, setFormData] = React.useState(() => ({
         name: props.host ? props.host.name : '',
-        document_root: props.host ? props.host.document_root : '',
         php_version: props.host ? props.host.php_version : '',
         local_domain: props.host ? props.host.local_domain : '',
         project_path: props.host ? props.host.project_path : '',
@@ -41,7 +40,7 @@ const VirtualHostForm = (props) => {
         if (!result.canceled) {
             setFormData({
                 ...formData,
-                document_root: result.filePaths[0]
+                project_path: result.filePaths[0]
             });
         }
     };
@@ -102,20 +101,6 @@ const VirtualHostForm = (props) => {
                         <div>
                             <label>
                                 Project Path:
-                                <input type="text" name="project_path" value={formData.project_path}
-                                       onChange={handleChange} required placeholder="Enter project path"/>
-                            </label>
-                        </div>
-                        <div>
-                            <label>
-                                Public Folder:
-                                <input type="text" name="public_folder" value={formData.public_folder}
-                                       onChange={handleChange} required placeholder="Enter public folder"/>
-                            </label>
-                        </div>
-                        <div>
-                            <label>
-                                Document Root:
                             </label>
                             <div style={{
                                 display: 'flex',
@@ -123,8 +108,8 @@ const VirtualHostForm = (props) => {
                                 alignItems: 'center',
                                 gap: '10px'
                             }}>
-                                <input type="text" name="document_root" value={formData.document_root}
-                                       onChange={handleChange} required placeholder="Select document root"/>
+                                <input type="text" name="project_path" value={formData.project_path}
+                                       onChange={handleChange} required placeholder="Select project path"/>
                                 <button type="button"
                                         style={{
                                             width: '220px',
@@ -132,6 +117,13 @@ const VirtualHostForm = (props) => {
                                         className="button" onClick={handleFolderSelect}>Select Folder
                                 </button>
                             </div>
+                        </div>
+                        <div>
+                            <label>
+                                Public Folder:
+                                <input type="text" name="public_folder" value={formData.public_folder}
+                                       onChange={handleChange} required placeholder="Enter public folder"/>
+                            </label>
                         </div>
                         <div>
                             <label>
