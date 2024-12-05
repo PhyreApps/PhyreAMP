@@ -3,12 +3,29 @@ import * as React from 'react';
 const phpVersions = ['php7.3', 'php7.4', 'php8.1', 'php8.2', 'php8.3'];
 
 const Settings = () => {
-    const [settings, setSettings] = React.useState({
-        redisPort: '6379',
-        mysqlPort: '3306',
-        httpdPort: '80',
-        allowedPhpVersions: phpVersions.reduce((acc, version) => ({ ...acc, [version]: true }), {})
-    });
+    const [settings, setSettings] = React.useState(null);
+
+    React.useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const result = await window.electron.ipcRenderer.invoke('get-settings');
+                if (result.success && result.settings) {
+                    setSettings(result.settings);
+                } else {
+                    setSettings({
+                        redisPort: '6379',
+                        mysqlPort: '3306',
+                        httpdPort: '80',
+                        allowedPhpVersions: phpVersions.reduce((acc, version) => ({ ...acc, [version]: true }), {})
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching settings:', error);
+            }
+        };
+
+        fetchSettings();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -17,6 +34,22 @@ const Settings = () => {
             [name]: type === 'checkbox' ? checked : value
         }));
     };
+
+    const handleSave = async () => {
+        try {
+            const result = await window.electron.ipcRenderer.invoke('save-settings', settings);
+            if (result.success) {
+                alert('Settings saved successfully!');
+            } else {
+                alert(`Error saving settings: ${result.error}`);
+            }
+        } catch (error) {
+            alert(`Error saving settings: ${error.message}`);
+        }
+    };
+    if (!settings) {
+        return <div>Loading settings...</div>;
+    }
 
     return (
         <form>
@@ -54,6 +87,7 @@ const Settings = () => {
                     </div>
                 ))}
             </div>
+            <button type="button" onClick={handleSave} className="button">Save Settings</button>
         </form>
     );
 };
