@@ -16,7 +16,7 @@ const Settings = () => {
                         redisPort: '6379',
                         mysqlPort: '3306',
                         httpdPort: '80',
-                        mysqlRootPassword: '',
+                        mysqlRootPassword: 'root',
                         allowedPhpVersions: phpVersions.reduce((acc, version) => ({...acc, [version]: true}), {}),
                     });
                 }
@@ -57,7 +57,8 @@ const Settings = () => {
                 redisPort: '6379',
                 mysqlPort: '3306',
                 httpdPort: '80',
-                allowedPhpVersions: phpVersions.reduce((acc, version) => ({...acc, [version]: true}), {})
+                allowedPhpVersions: phpVersions.reduce((acc, version) => ({...acc, [version]: true}), {}),
+                mysqlRootPassword: 'root'
             };
             setSettings(defaultSettings);
             await saveSettings(defaultSettings);
