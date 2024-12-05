@@ -33,7 +33,7 @@ const DockerControl = () => {
 
         const fetchDockerStatus = async () => {
             await checkDockerRunning();
-            const result = await window.electron.ipcRenderer.invoke('status-container', 'phyreamp-phpmyadmin');
+            const result = await window.electron.ipcRenderer.invoke('all-containers-status');
             if (result.success) {
                 setStatus(result.message);
             } else {
@@ -56,7 +56,7 @@ const DockerControl = () => {
         const result = await window.electron.ipcRenderer.invoke(command);
         if (result.success) {
             alert(result.message);
-            if (command === 'status-container') {
+            if (command === 'all-containers-status') {
                 setStatus(result.message);
             }
         } else {
@@ -92,6 +92,9 @@ const DockerControl = () => {
                         <button className="restart-button" onClick={() => executeCommand('restart-container')}>Restart</button>
                     </>
                 )}
+                <button onClick={() => executeCommand('rebuild-containers') }>
+                    Rebuild
+                </button>
             </div>
         </div>
     );

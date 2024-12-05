@@ -95,3 +95,4 @@ out/
 .idea/php.xml
 .idea/modules.xml
 /docker/mysql-data/
+.aider*

@@ -4,6 +4,13 @@ import { generateHttpdConf } from './virtualHostBuilder';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import { startContainer, stopContainer, restartContainer, getContainerStatus } from './dockerService';
+import {
+  startMySQLContainer,
+  stopMySQLContainer,
+  restartMySQLContainer,
+  getMySQLContainerStatus,
+  createMysqlContainer
+} from './mysqlService';
 import { exec } from 'child_process';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -115,9 +122,9 @@ ipcMain.handle('remove-virtual-host', async (event, id) => {
   }
 });
 
-ipcMain.handle('start-container', async (event, containerName) => {
+ipcMain.handle('start-container', async (event) => {
   try {
-    const output = await startContainer(containerName);
+    const output = await startMySQLContainer();
     return { success: true, output };
   } catch (error) {
     return { success: false, error: error.message };
@@ -125,6 +132,9 @@ ipcMain.handle('start-container', async (event, containerName) => {
 });
 
 ipcMain.handle('stop-container', async (event, containerName) => {
+  if (containerName === 'phyreamp-mysql') {
+    return await stopMySQLContainer();
+  }
   try {
     const output = await stopContainer(containerName);
     return { success: true, output };
@@ -134,6 +144,9 @@ ipcMain.handle('stop-container', async (event, containerName) => {
 });
 
 ipcMain.handle('restart-container', async (event, containerName) => {
+  if (containerName === 'phyreamp-mysql') {
+    return await restartMySQLContainer();
+  }
   try {
     const output = await restartContainer(containerName);
     return { success: true, output };
@@ -152,13 +165,20 @@ ipcMain.handle('generate-httpd-conf', async () => {
 });
 
 ipcMain.handle('status-container', async (event, containerName) => {
-  try {
-    const output = await getContainerStatus(containerName);
-    return { success: true, output };
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
+  return await getMySQLContainerStatus();
 });
+
+ipcMain.handle('all-containers-status', async (event) => {
+
+    return await getMySQLContainerStatus();
+
+})
+
+ipcMain.handle('rebuild-containers', async (event) => {
+
+  return await createMysqlContainer();
+
+})
 
 console.log('👋 This message is being logged by "main.js"');
 
