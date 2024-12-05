@@ -138,6 +138,7 @@ ipcMain.handle('select-folder', async () => {
 ipcMain.handle('save-virtual-host', async (event, formData) => {
   try {
     const id = await saveVirtualHost(formData);
+    await rebuildVirtualHostContainers();
     return { success: true, id };
   } catch (error) {
     return { success: false, error: error.message };
@@ -156,6 +157,7 @@ ipcMain.handle('get-virtual-hosts', async () => {
 ipcMain.handle('remove-virtual-host', async (event, id) => {
   try {
     await removeVirtualHost(id);
+    await rebuildVirtualHostContainers();
     return { success: true };
   } catch (error) {
     return { success: false, error: error.message };
