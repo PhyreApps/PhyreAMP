@@ -7,7 +7,7 @@ import { addVirtualHostsToHostsFile, removeVirtualHostsFromHostsFile } from './o
 const dockerApachePath =
     process.env.NODE_ENV === 'development'
         ? path.join(__dirname, '../../docker/apache')
-        : path.join(process.resourcesPath, 'docker/apache');
+        : path.join(process.resourcesPath, 'apache');
 
 const generateHttpdConf = async () => {
 
@@ -27,7 +27,7 @@ const generateHttpdConf = async () => {
     }
 
     // Read default HTTPD configuration file
-    const defaultConfigPath = path.join(dockerApachePath, 'docker/apache/httpd.conf');
+    const defaultConfigPath = path.join(dockerApachePath, 'httpd.conf');
     console.log('defaultConfigPath:', defaultConfigPath);
 
     const defaultConfig = fs.readFileSync(defaultConfigPath, 'utf8');
