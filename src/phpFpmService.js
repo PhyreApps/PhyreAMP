@@ -1,5 +1,6 @@
 const Docker = require('dockerode');
 const path = require('path');
+import { getVirtualHosts } from './database.js';
 var docker = new Docker();
 
 const createPhpFpmContainer = async (phpVersion) => {
@@ -33,13 +34,16 @@ const createPhpFpmContainer = async (phpVersion) => {
                     });
                 });
 
+                const virtualHosts = await getVirtualHosts();
+                const binds = virtualHosts.map(host => `${host.document_root}:/var/www/html/${host.name}`);
+
                 const container = await docker.createContainer({
                     Image: `php:${phpVersion}-fpm`,
                     name: `phyreamp-php${phpVersion.replace('.', '')}-fpm`,
                     HostConfig: {
                         NetworkMode: 'phyreamp-network',
                         Binds: [
-                            path.resolve(__dirname, '../docker/html') + ':/var/www/html'
+                            ...binds
                         ]
                     }
                 });
