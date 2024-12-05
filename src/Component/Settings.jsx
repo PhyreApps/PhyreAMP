@@ -73,10 +73,9 @@ const Settings = () => {
         try {
             const result = await window.electron.ipcRenderer.invoke('save-settings', settings);
             if (result.success) {
-                await window.electron.ipcRenderer.invoke('rebuild-containers').then((result) => {
+                await window.electron.ipcRenderer.invoke('rebuild-containers').then(async (result) => {
                     if (result.success) {
-                        alert('Settings saved successfully!');
-                        alert('Containers rebuilt successfully!');
+                        await window.electron.ipcRenderer.invoke('window-reload');
                     } else {
                         alert(`Error rebuilding containers: ${result.error}`);
                     }

@@ -59,6 +59,14 @@ app.whenReady().then(() => {
   });
 });
 
+ipcMain.handle('window-reload', async () => {
+  const windows = BrowserWindow.getAllWindows();
+  if (windows.length > 0) {
+    windows[0].reload();
+  }
+  return { success: true };
+});
+
 ipcMain.handle('save-settings', async (event, settings) => {
   try {
     await saveSettings(settings);
