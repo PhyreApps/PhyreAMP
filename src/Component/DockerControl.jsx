@@ -104,11 +104,11 @@ const DockerControl = () => {
 
             </div>
             <div className="buttons">
-                {!dockerRunning && <button className="button" onClick={() => executeCommand('start-container')}>Start</button>}
+                {!dockerRunning && <button className="button" onClick={() => executeCommand('start-all-containers')}>Start</button>}
                 {status === 'running' || dockerRunning && (
                     <>
-                        <button className="button" onClick={() => executeCommand('stop-container')}>Stop</button>
-                        <button className="restart-button" onClick={() => executeCommand('restart-container')}>Restart</button>
+                        <button className="button" onClick={() => executeCommand('stop-all-containers')}>Stop</button>
+                        <button className="restart-button" onClick={() => executeCommand('restart-all-containers')}>Restart</button>
                     </>
                 )}
             </div>
