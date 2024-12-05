@@ -28,37 +28,37 @@ const DockerControl = () => {
         }
     };
 
+    const checkDockerRunning = async () => {
+        const running = await isDockerRunning();
+        setDockerRunning(running);
+    };
+
+    const fetchSettings = async () => {
+        try {
+            const result = await window.electron.ipcRenderer.invoke('get-settings');
+            if (result.success && result.settings) {
+                setHttpdPort(result.settings.httpdPort || '80');
+            }
+        } catch (error) {
+            console.error('Error fetching settings:', error);
+        }
+    };
+
+    const fetchDockerStatus = async () => {
+
+        await fetchSettings();
+        await checkDockerRunning();
+
+        const result = await window.electron.ipcRenderer.invoke('all-containers-status');
+        if (result && result.success) {
+            setStatus(result.status);
+        } else {
+            setStatus(`Error fetching Docker status: ${result.error}`);
+        }
+
+    };
+
     React.useEffect(() => {
-        const checkDockerRunning = async () => {
-            const running = await isDockerRunning();
-            setDockerRunning(running);
-        };
-
-        const fetchSettings = async () => {
-            try {
-                const result = await window.electron.ipcRenderer.invoke('get-settings');
-                if (result.success && result.settings) {
-                    setHttpdPort(result.settings.httpdPort || '80');
-                }
-            } catch (error) {
-                console.error('Error fetching settings:', error);
-            }
-        };
-
-
-        const fetchDockerStatus = async () => {
-
-            await fetchSettings();
-            await checkDockerRunning();
-
-            const result = await window.electron.ipcRenderer.invoke('all-containers-status');
-            if (result && result.success) {
-                setStatus(result.status);
-            } else {
-                setStatus(`Error fetching Docker status: ${result.error}`);
-            }
-
-        };
         fetchDockerStatus();
     }, []);
     const executeCommand = async (command) => {
@@ -128,12 +128,22 @@ const DockerControl = () => {
 
                 </div>
                 <div className="buttons">
-                    {!dockerRunning && !isStopping && !isRestarting && (
+                    {!dockerRunning && (
+                        <button className="button" onClick={async () => {
+                            await startDockerApp();
+                            await executeCommand('start-all-containers').then(async () => {
+                                await fetchDockerStatus();
+                            });
+                        }}>
+                            Start Docker
+                        </button>
+                    )}
+                    {!dockerRunning || status !== 'Running' && (
                         <button className="button" onClick={() => executeCommand('start-all-containers')}>
                             {isStopping ? 'Stopping...' : isRestarting ? 'Restarting...' : 'Start'}
                         </button>
                     )}
-                    {status === 'running' || (dockerRunning) && (
+                    {status === 'Running' && dockerRunning && (
                         <>
                             <button className={`button stop-button ${isStopping ? 'stopping' : ''}`}
                                     onClick={() => executeCommand('stop-all-containers')}>

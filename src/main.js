@@ -310,10 +310,6 @@ ipcMain.handle('all-containers-status', async (event) => {
       phpfpmStatuses[host.php_version] = status.message || 'Unknown';
     }
 
-    console.log('httpdStatus', httpdStatus);
-    console.log('mysqlStatus', mysqlStatus);
-    console.log('woo', ((httpdStatus.message == 'Running' && mysqlStatus.message == 'Running') ? 'Running' : 'Stopped'));
-
     return {
       success: true,
       message: 'Container statuses fetched successfully.',
