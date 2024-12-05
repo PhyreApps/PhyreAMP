@@ -81,7 +81,7 @@ const createHttpdContainer = async () => {
                         },
                         Binds: [
                             path.resolve(__dirname, '../docker/html') + ':/var/www/html',
-                            path.resolve(__dirname, '../docker/apache/httpd.conf') + ':/usr/local/apache2/conf/httpd.conf',
+                            path.resolve(__dirname, '../docker/apache') + '/httpd.conf:/usr/local/apache2/conf/httpd.conf',
                         ]
                     }
                 });
