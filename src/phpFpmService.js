@@ -35,7 +35,9 @@ const createPhpFpmContainer = async (phpVersion) => {
                 });
 
                 const virtualHosts = await getVirtualHosts();
-                const binds = virtualHosts.map(host => `${host.document_root}:/var/www/html/${host.name}`);
+                const binds = virtualHosts
+                    .filter(host => host.php_version === phpVersion)
+                    .map(host => `${host.document_root}:/var/www/html/${host.name}`);
 
                 const container = await docker.createContainer({
                     Image: `php:${phpVersion}-fpm`,
