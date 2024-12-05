@@ -4,7 +4,6 @@ import './DockerControl.css';
 const DockerControl = () => {
     const [status, setStatus] = React.useState('');
     const [httpdPort, setHttpdPort] = React.useState('80');
-    const [isRebuilding, setIsRebuilding] = React.useState(false);
     const [dockerRunning, setDockerRunning] = React.useState(false);
 
 
@@ -70,9 +69,6 @@ const DockerControl = () => {
                 return;
             }
         }
-        if (command === 'rebuild-containers') {
-            setIsRebuilding(true);
-        }
         try {
             const result = await window.electron.ipcRenderer.invoke(command);
             if (result && result.success) {
@@ -83,10 +79,8 @@ const DockerControl = () => {
             } else {
                 alert(`Error executing ${command}: ${result.error}`);
             }
-        } finally {
-            if (command === 'rebuild-containers') {
-                setIsRebuilding(false);
-            }
+        } catch (error) {
+            alert(`Error executing ${command}: ${error.message}`);
         }
     };
 
@@ -117,9 +111,6 @@ const DockerControl = () => {
                         <button className="restart-button" onClick={() => executeCommand('restart-container')}>Restart</button>
                     </>
                 )}
-                <button onClick={() => executeCommand('rebuild-containers')} disabled={isRebuilding}>
-                    {isRebuilding ? 'Rebuilding...' : 'Rebuild'}
-                </button>
             </div>
         </div>
     );
