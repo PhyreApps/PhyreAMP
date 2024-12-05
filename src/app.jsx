@@ -6,7 +6,7 @@ import { createRoot } from 'react-dom/client';
 import VirtualHostForm from './Component/VirtualHostForm.jsx';
 import VirtualHostTable from './Component/VirtualHostTable.jsx';
 import DockerControl from './Component/DockerControl.jsx';
-import PhyreXAMPLogo from './Icons/PhyreXAMPLogo.jsx';
+import PhyreAMPLogo from './Icons/PhyreAMPLogo.jsx';
 
 const root = createRoot(document.getElementById('app'));
 const App = () => {
@@ -19,7 +19,7 @@ const App = () => {
                 justifyContent: 'center',
                 marginBottom: '20px',
             }}>
-                <PhyreXAMPLogo/>
+                <PhyreAMPLogo/>
             </div>
 
             <div>
