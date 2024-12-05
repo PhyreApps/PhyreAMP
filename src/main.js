@@ -125,7 +125,18 @@ ipcMain.handle('check-docker-process', async () => {
 
 ipcMain.handle('start-docker-app', async () => {
   return new Promise((resolve, reject) => {
-    exec('open -a Docker', (error) => {
+
+    // check os type
+    let command = 'open -a Docker';
+    if (process.platform === 'win32') {
+        command = 'start "" "C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe"';
+   } else if (process.platform === 'linux') {
+        command = 'sudo systemctl start docker';
+    } else if (process.platform === 'darwin') {
+        command = 'open -a Docker';
+    }
+
+    exec(command, (error) => {
       if (error) {
         reject(new Error('Failed to start Docker app.'));
       } else {
