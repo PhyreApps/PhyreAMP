@@ -54,12 +54,14 @@ const generateHttpdConf = async () => {
     DocumentRoot "/var/www/html/${host.local_domain}/${publicFolder}"
     <Directory "/var/www/html/${host.local_domain}/${publicFolder}">
     
+        Options FollowSymLinks
+        AllowOverride All
+        Require all granted
+    
         <FilesMatch ".+\\.ph(ar|p|tml)$"> 
             SetHandler "proxy:fcgi://phyreamp-php${host.php_version.replace('.', '')}-fpm:9000"
         </FilesMatch>
     
-        AllowOverride All
-        Require all granted
     </Directory> 
 </VirtualHost>
 `;
