@@ -249,6 +249,13 @@ ipcMain.handle('restart-container', async (event, containerName) => {
 
 ipcMain.handle('start-all-containers', async () => {
   try {
+    const { checkContainerExists } = require('./dockerService');
+
+    const httpdExists = await checkContainerExists('phyreamp-httpd');
+    if (!httpdExists.exists) {
+      await rebuildVirtualHostContainers();
+    }
+
     await startHttpdContainer();
     await startMySQLContainer();
     await startRedisContainer();
