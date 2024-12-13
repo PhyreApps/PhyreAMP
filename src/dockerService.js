@@ -76,6 +76,19 @@ const getNetworkStatus = async (networkName) => {
     }
 };
 
+const checkContainerExists = async (containerName) => {
+    try {
+        const container = docker.getContainer(containerName);
+        await container.inspect();
+        return { success: true, exists: true };
+    } catch (error) {
+        if (error.statusCode === 404) {
+            return { success: true, exists: false };
+        }
+        return { success: false, error: `Error checking container ${containerName}: ${error.message}` };
+    }
+};
+
 module.exports = {
     createNetwork,
     removeNetwork,
@@ -83,5 +96,6 @@ module.exports = {
     startContainer,
     stopContainer,
     restartContainer,
-    getContainerStatus
+    getContainerStatus,
+    checkContainerExists
 };
