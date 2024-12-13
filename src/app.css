@@ -1,12 +1,10 @@
 @font-face {
-  font-family: 'Ubuntu';
-  src: url('./assets/fonts/Ubuntu-Regular.ttf') format('truetype');
+
 }
 
 body {
   margin: auto;
   max-width: 100%;
   padding: 2rem;
-  font-family: 'Ubuntu', Arial, sans-serif;
   background-color: #101920;
 }
