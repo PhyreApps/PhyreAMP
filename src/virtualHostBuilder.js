@@ -9,6 +9,11 @@ const dockerApachePath =
         ? path.join(__dirname, '../../docker/apache')
         : path.join(process.resourcesPath, 'apache');
 
+const dockerPHPPath =
+    process.env.NODE_ENV === 'development'
+        ? path.join(__dirname, '../../docker/php')
+        : path.join(process.resourcesPath, 'php');
+
 const generateHttpdConf = async () => {
 
     const virtualHosts = await getVirtualHosts();
@@ -36,6 +41,23 @@ const generateHttpdConf = async () => {
     const newConfigPath = path.join(apacheDataPath, 'httpd.conf');
     fs.writeFileSync(newConfigPath, defaultConfig);
     console.log('httpd.conf file generated successfully.');
+
+
+    // php fpm
+    const phpDataPath = path.join(userDataPath, 'php');
+    if (!fs.existsSync(phpDataPath)) {
+        fs.mkdirSync(phpDataPath, { recursive: true });
+    }
+
+    // this is from source
+    const defaultPHPConfigPath = path.join(dockerPHPPath, 'php.ini');
+    console.log('defaultPHPConfigPath:', defaultPHPConfigPath);
+
+    const defaultPHPConfigContent = fs.readFileSync(defaultPHPConfigPath, 'utf8');
+
+    // this is to container
+    const newPHPConfigPath = path.join(phpDataPath, 'php.ini');
+    fs.writeFileSync(newPHPConfigPath, defaultPHPConfigContent);
 
 
     try {

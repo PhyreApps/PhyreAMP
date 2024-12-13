@@ -1,6 +1,9 @@
+import fs from "fs";
+
 const Docker = require('dockerode');
 const path = require('path');
 import { getVirtualHosts } from './database.js';
+import {app} from "electron";
 var docker = new Docker();
 
 const createPhpFpmContainer = async (phpVersion) => {
@@ -45,6 +48,14 @@ const createPhpFpmContainer = async (phpVersion) => {
 
                 // merge two binds
                 binds.push(...secondBinds);
+
+                const userDataPath = app.getPath('userData');
+                const phpDataPath = path.join(userDataPath, 'php');
+
+                const defaultPHPConf = path.join(phpDataPath, 'php.ini');
+                if (fs.existsSync(defaultPHPConf)) {
+                    binds.push(`${defaultPHPConf}:/usr/local/etc/php/php.ini`);
+                }
 
                 // Use a Set to filter out duplicate binds
                 const uniqueBinds = [...new Set(binds)];
