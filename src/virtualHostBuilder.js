@@ -24,9 +24,7 @@ const generateHttpdConf = async () => {
     // Add new virtual hosts to the hosts file
     await addVirtualHostsToHostsFile(virtualHosts);
 
-
     const userDataPath = app.getPath('userData');
-
 
 
     // Apache working directory
@@ -37,15 +35,15 @@ const generateHttpdConf = async () => {
 
     // Read default HTTPD configuration file
     const defaultConfigPath = path.join(dockerApachePath, 'httpd.conf');
-    console.log('defaultConfigPath:', defaultConfigPath);
+    // console.log('defaultConfigPath:', defaultConfigPath);
 
     const defaultConfigContent = fs.readFileSync(defaultConfigPath, 'utf8');
 
     // Write default configuration to new file
     const newApacheConfigPath = path.join(apacheDataPath, 'httpd.conf');
     fs.writeFileSync(newApacheConfigPath, defaultConfigContent);
-    console.log('httpd.conf file generated successfully.');
-    console.log('newApacheConfigPath:', newApacheConfigPath);
+    // console.log('httpd.conf file generated successfully.');
+    // console.log('newApacheConfigPath:', newApacheConfigPath);
 
 
     // php fpm
@@ -56,15 +54,15 @@ const generateHttpdConf = async () => {
 
     // this is from source
     const defaultPHPConfigPath = path.join(dockerPHPPath, 'php.ini');
-    console.log('defaultPHPConfigPath:', defaultPHPConfigPath);
+    // console.log('defaultPHPConfigPath:', defaultPHPConfigPath);
 
     const defaultPHPConfigContent = fs.readFileSync(defaultPHPConfigPath, 'utf8');
 
     // this is to container
     const newPHPConfigPath = path.join(phpDataPath, 'php.ini');
     fs.writeFileSync(newPHPConfigPath, defaultPHPConfigContent);
-    console.log('php.ini file generated successfully.');
-    console.log('newPHPConfigPath:', newPHPConfigPath);
+    // console.log('php.ini file generated successfully.');
+    // console.log('newPHPConfigPath:', newPHPConfigPath);
 
 
     try {

@@ -85,24 +85,19 @@ const createHttpdContainer = async () => {
 
 
                 const userDataPath = app.getPath('userData');
-                console.log('userDataPath', userDataPath);
+                const apacheDataPath = path.join(userDataPath, 'apache');
 
-                const apacheDataPath = path.join(userDataPath, 'docker/apache');
-
-                console.log('apacheDataPath', apacheDataPath);
-
-                if (!fs.existsSync(apacheDataPath)) {
-                    fs.mkdirSync(apacheDataPath, { recursive: true });
-                }
-                const defaultHttpdConf = path.join(apacheDataPath, 'httpd.conf');
-                if (fs.existsSync(defaultHttpdConf)) {
-                    binds.push(`${defaultHttpdConf}:/usr/local/apache2/conf/httpd.conf`);
+                const newApacheConfigPath = path.join(apacheDataPath, 'httpd.conf');
+                if (fs.existsSync(newApacheConfigPath)) {
+                    binds.push(`${newApacheConfigPath}:/usr/local/apache2/conf/httpd.conf`);
                 }
 
-                const defaultVirtualHostsConf = path.join(apacheDataPath, 'virtualhosts.conf');
-                if (fs.existsSync(defaultVirtualHostsConf)) {
-                    binds.push(`${defaultVirtualHostsConf}:/usr/local/apache2/conf/virtualhosts.conf`);
+                const newApacheVirtualHostsPath = path.join(apacheDataPath, 'virtualhosts.conf');
+                if (fs.existsSync(newApacheVirtualHostsPath)) {
+                    binds.push(`${newApacheVirtualHostsPath}:/usr/local/apache2/conf/extra/virtualhosts.conf`);
                 }
+
+                console.log('binds:', binds);
 
                 const extraHosts = virtualHosts.map(host => `${host.local_domain}:127.0.0.1`);
 
