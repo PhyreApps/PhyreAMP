@@ -94,7 +94,7 @@ const createHttpdContainer = async () => {
 
                 const newApacheVirtualHostsPath = path.join(apacheDataPath, 'virtualhosts.conf');
                 if (fs.existsSync(newApacheVirtualHostsPath)) {
-                    binds.push(`${newApacheVirtualHostsPath}:/usr/local/apache2/conf/extra/virtualhosts.conf`);
+                    binds.push(`${newApacheVirtualHostsPath}:/usr/local/apache2/conf/virtualhosts.conf`);
                 }
 
                 console.log('binds:', binds);
