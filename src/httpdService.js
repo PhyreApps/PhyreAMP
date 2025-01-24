@@ -83,8 +83,9 @@ const createHttpdContainer = async () => {
                 const virtualHosts = await getVirtualHosts();
                 const binds = virtualHosts.map(host => `${host.project_path}:/var/www/html/${host.local_domain}`);
 
-                const userDataPath = app.getPath('userData');
-                const apacheDataPath = path.join(userDataPath, 'apache');
+                const appDataPath = app.getPath('appData');
+
+                const apacheDataPath = path.join(appDataPath, 'docker/apache');
                 if (!fs.existsSync(apacheDataPath)) {
                     fs.mkdirSync(apacheDataPath, { recursive: true });
                 }
