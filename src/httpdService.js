@@ -5,9 +5,11 @@ const path = require("node:path");
 import { getSettings, getVirtualHosts } from './database.js';
 import {app} from "electron";
 
+var docker = new Docker();
+
 const startHttpdContainer = async () => {
     try {
-        var docker = new Docker();
+
         const container = docker.getContainer('phyreamp-httpd');
         await container.start();
         return { success: true, message: 'HTTPD container started successfully.' };
@@ -18,7 +20,7 @@ const startHttpdContainer = async () => {
 
 const stopHttpdContainer = async () => {
     try {
-        var docker = new Docker();
+
         const container = docker.getContainer('phyreamp-httpd');
         await container.stop();
         return { success: true, message: 'HTTPD container stopped successfully.' };
@@ -29,7 +31,7 @@ const stopHttpdContainer = async () => {
 
 const restartHttpdContainer = async () => {
     try {
-        var docker = new Docker();
+
         const container = docker.getContainer('phyreamp-httpd');
         await container.restart();
         return { success: true, message: 'HTTPD container restarted successfully.' };
@@ -40,7 +42,7 @@ const restartHttpdContainer = async () => {
 
 const getHttpdContainerStatus = async () => {
     try {
-        var docker = new Docker();
+
         const container = docker.getContainer('phyreamp-httpd');
         const data = await container.inspect();
         if (data.State.Running) {
@@ -54,7 +56,7 @@ const getHttpdContainerStatus = async () => {
 
 const createHttpdContainer = async () => {
 
-    var docker = new Docker();
+
     docker.ping(function(err, data) {
         console.log('docker.ping:', err, data);
     });
@@ -136,7 +138,7 @@ const createHttpdContainer = async () => {
 
 const deleteHttpdContainer = async () => {
     try {
-        var docker = new Docker();
+
         const container = docker.getContainer('phyreamp-httpd');
         await container.remove({ force: true });
         return { success: true, message: 'HTTPD container deleted successfully.' };
