@@ -49,8 +49,13 @@ const createPhpFpmContainer = async (phpVersion) => {
                 // merge two binds
                 binds.push(...secondBinds);
 
+                const appPath = app.getAppPath();
+                const appDataPath = app.getPath('appData');
                 const userDataPath = app.getPath('userData');
-                const phpDataPath = path.join(userDataPath, 'php');
+                const dockerDataPath = path.join(appPath, 'docker/');
+
+                //PHP working dir
+                const phpDataPath = path.join(dockerDataPath, 'php');
 
                 const defaultPHPConf = path.join(phpDataPath, 'php.ini');
                 if (fs.existsSync(defaultPHPConf)) {

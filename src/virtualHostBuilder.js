@@ -24,11 +24,14 @@ const generateHttpdConf = async () => {
     // Add new virtual hosts to the hosts file
     await addVirtualHostsToHostsFile(virtualHosts);
 
+    const appPath = app.getAppPath();
+    const appDataPath = app.getPath('appData');
     const userDataPath = app.getPath('userData');
+    const dockerDataPath = path.join(appPath, 'docker/');
 
 
     // Apache working directory
-    const apacheDataPath = path.join(userDataPath, 'apache');
+    const apacheDataPath = path.join(dockerDataPath, 'apache');
     if (!fs.existsSync(apacheDataPath)) {
         fs.mkdirSync(apacheDataPath, { recursive: true });
     }
@@ -47,7 +50,7 @@ const generateHttpdConf = async () => {
 
 
     // php fpm
-    const phpDataPath = path.join(userDataPath, 'php');
+    const phpDataPath = path.join(dockerDataPath, 'php');
     if (!fs.existsSync(phpDataPath)) {
         fs.mkdirSync(phpDataPath, { recursive: true });
     }

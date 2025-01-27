@@ -96,9 +96,13 @@ const createHttpdContainer = async () => {
             const virtualHosts = await getVirtualHosts();
             const binds = virtualHosts.map(host => `${host.project_path}:/var/www/html/${host.local_domain}`);
 
-
+            const appPath = app.getAppPath();
+            const appDataPath = app.getPath('appData');
             const userDataPath = app.getPath('userData');
-            const apacheDataPath = path.join(userDataPath, 'apache');
+            const dockerDataPath = path.join(appPath, 'docker/');
+
+            // Apache working directory
+            const apacheDataPath = path.join(dockerDataPath, 'apache');
 
             const newApacheConfigPath = path.join(apacheDataPath, 'httpd.conf');
             if (fs.existsSync(newApacheConfigPath)) {

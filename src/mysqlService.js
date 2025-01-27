@@ -1,7 +1,14 @@
+import {app} from "electron";
+
 const Docker = require('dockerode');
 const path = require('path');
 import { getSettings } from './database.js';
 var docker = new Docker();
+
+const appPath = app.getAppPath();
+const appDataPath = app.getPath('appData');
+const userDataPath = app.getPath('userData');
+const dockerDataPath = path.join(appPath, 'docker/');
 
 const startMySQLContainer = async () => {
     try {
@@ -90,7 +97,7 @@ const createMysqlContainer = async () => {
                         PortBindings: {
                             '3306/tcp': [{ HostPort: (settings.mysqlPort || '3306').toString() }]
                         },
-                        Binds: [path.resolve(__dirname, '../docker/mysql-data') + ':/var/lib/mysql']
+                        Binds: [path.join(dockerDataPath, 'mysql-data') + ':/var/lib/mysql']
                     }
                 });
                 await container.start();
