@@ -66,7 +66,7 @@ const createPhpFpmContainer = async (phpVersion) => {
                 const uniqueBinds = [...new Set(binds)];
 
                 const container = await docker.createContainer({
-                    Image: `php:${phpVersion}-fpm`,
+                    Image: `selfworks/phyreamp-php${phpVersion}`,
                     name: `phyreamp-php${phpVersion.replace('.', '')}-fpm`,
                     HostConfig: {
                         NetworkMode: 'phyreamp-network',
