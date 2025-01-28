@@ -18,6 +18,7 @@ const readHostsFile = () => {
 
 const writeHostsFile = async (content) => {
     try {
+        return true;
         await fs.writeFileSync(HOSTS_FILE_PATH, content, 'utf8');
     } catch (error) {
         console.error(`Error writing to hosts file: ${error.message}`);

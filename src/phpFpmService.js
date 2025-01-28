@@ -55,7 +55,8 @@ const createPhpFpmContainer = async (phpVersion) => {
                 const dockerDataPath = path.join(appPath, 'docker/');
 
                 //PHP working dir
-                const phpDataPath = path.join(dockerDataPath, 'php');
+                //const phpDataPath = path.join(dockerDataPath, 'php');
+                const phpDataPath = path.join(userDataPath, 'php');
 
                 const defaultPHPConf = path.join(phpDataPath, 'php.ini');
                 if (fs.existsSync(defaultPHPConf)) {

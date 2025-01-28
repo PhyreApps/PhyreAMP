@@ -31,7 +31,8 @@ const generateHttpdConf = async () => {
 
 
     // Apache working directory
-    const apacheDataPath = path.join(dockerDataPath, 'apache');
+    //const apacheDataPath = path.join(dockerDataPath, 'apache');
+    const apacheDataPath = path.join(userDataPath, 'apache');
     if (!fs.existsSync(apacheDataPath)) {
         fs.mkdirSync(apacheDataPath, { recursive: true });
     }
@@ -50,7 +51,8 @@ const generateHttpdConf = async () => {
 
 
     // php fpm
-    const phpDataPath = path.join(dockerDataPath, 'php');
+    //const phpDataPath = path.join(dockerDataPath, 'php');
+    const phpDataPath = path.join(userDataPath, 'php');
     if (!fs.existsSync(phpDataPath)) {
         fs.mkdirSync(phpDataPath, { recursive: true });
     }

@@ -102,7 +102,8 @@ const createHttpdContainer = async () => {
             const dockerDataPath = path.join(appPath, 'docker/');
 
             // Apache working directory
-            const apacheDataPath = path.join(dockerDataPath, 'apache');
+            //const apacheDataPath = path.join(dockerDataPath, 'apache');
+            const apacheDataPath = path.join(userDataPath, 'apache');
 
             const newApacheConfigPath = path.join(apacheDataPath, 'httpd.conf');
             if (fs.existsSync(newApacheConfigPath)) {

@@ -1,0 +1,87 @@
+FROM php:8.1-fpm
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    locales \
+    zip \
+    jpegoptim optipng pngquant gifsicle \
+    vim \
+    unzip \
+    git \
+    curl \
+    libonig-dev \
+    libzip-dev \
+    libicu-dev \
+    icu-devtools \
+    libgd-dev \
+    systemd \
+
+
+#RUN apt-get update && apt-get install -y  \
+#    common \
+#    mysql \
+#    xml \
+#    xmlrpc \
+#    gd \
+#    imagick \
+#    cli \
+#    dev \
+#    imap \
+#    mbstring \
+#    opcache \
+#    soap \
+#    sockets \
+#    fileinfo \
+#    intl \
+#    iconv \
+#    posix \
+#    bcmath \
+#    calendar \
+#    fpm \
+#    ftp \
+#    pdo \
+#    mysqlnd
+
+RUN /bin/bash -c "/usr/bin/mysqld_safe --skip-grant-tables"
+
+RUN apt-get update \
+     && docker-php-ext-install mysqli pdo pdo_mysql \
+     && docker-php-ext-enable pdo_mysql mysqli
+
+#RUN docker-php-ext-install mysqli
+#RUN apachectl restart
+
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+#Mine
+
+
+# configuring php extension
+#RUN #docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-external-gd
+#RUN #docker-php-ext-configure intl
+
+# Install extensions
+#RUN #docker-php-ext-install bcmath calendar gd intl mbstring zip exif pcntl
+
+
+
+
+RUN apachectl restart
+
+
+
+#Change MySQL Root Password
+#RUN /bin/bash -c "/usr/bin/mysqld_safe --skip-grant-tables &" && \
+#  sleep 5 && \
+#  mysql -u root -e "CREATE DATABASE artavolo" && \
+#  mysql -u root -e "CREATE DATABASE artavolo_data" && \
+##  mysql -u root artavolo < /usr/sql/init.sql && \
+#  mysql -u root -e "FLUSH PRIVILEGES;" && \
+#  mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';"
