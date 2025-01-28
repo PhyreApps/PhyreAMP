@@ -18,15 +18,15 @@ const createPhpFpmContainer = async (phpVersion) => {
         if (error.statusCode === 404) {
             try {
                 await new Promise((resolve, reject) => {
-                    docker.pull(`php:${phpVersion}-fpm`, (err, stream) => {
+                    docker.pull(`selfworks/phyreamp-php${phpVersion}`, (err, stream) => {
                         if (err) {
-                            return reject(new Error(`Error pulling PHP-FPM image for PHP ${phpVersion}: ${err.message}`));
+                            return reject(new Error(`Error pulling PhyreAMP-PHP-FPM image for PHP ${phpVersion}: ${err.message}`));
                         }
                         docker.modem.followProgress(stream, onFinished, onProgress);
 
                         function onFinished(err, output) {
                             if (err) {
-                                return reject(new Error(`Error pulling PHP-FPM image for PHP ${phpVersion}: ${err.message}`));
+                                return reject(new Error(`Error pulling PhyreAMP-PHP-FPM image for PHP ${phpVersion}: ${err.message}`));
                             }
                             resolve();
                         }
