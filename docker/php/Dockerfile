@@ -25,10 +25,12 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 #Mine
 
-
 # configuring php extension
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-external-gd
 RUN docker-php-ext-configure intl
 
 # Install extensions
 RUN docker-php-ext-install bcmath calendar gd intl mysqli pdo pdo_mysql mbstring zip exif pcntl
+
+# Enable the extensions
+RUN docker-php-ext-enable bcmath calendar gd intl mysqli pdo pdo_mysql mbstring zip exif pcntl
