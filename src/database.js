@@ -2,8 +2,9 @@ import { app } from 'electron';
 import { generateHttpdConf } from './virtualHostBuilder';
 import path from 'node:path';
 import sqlite3 from 'sqlite3';
+import {appConfig} from "./config";
 
-const dbPath = path.join(app.getPath('userData'), 'phyre-amp.db');
+const dbPath = path.join(app.getPath('userData'), appConfig.prefix + '.db');
 const db = new sqlite3.Database(dbPath);
 
 db.serialize(() => {

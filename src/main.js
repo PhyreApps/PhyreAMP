@@ -1,4 +1,5 @@
 import {app, BrowserWindow, dialog, ipcMain, shell} from 'electron';
+import {appConfig} from './config';
 import {saveVirtualHost, getVirtualHosts, removeVirtualHost, saveSettings, getSettings, updateVirtualHost} from './database';
 import {generateHttpdConf} from './virtualHostBuilder';
 import path from 'node:path';
@@ -209,7 +210,7 @@ ipcMain.handle('remove-virtual-host', async (event, id) => {
 });
 
 ipcMain.handle('start-container', async (event, containerName) => {
-    if (containerName === 'phyreamp-phpmyadmin') {
+    if (containerName === appConfig.prefix + '-phpmyadmin') {
         return await startPhpMyAdminContainer();
     }
     try {
@@ -221,9 +222,9 @@ ipcMain.handle('start-container', async (event, containerName) => {
 });
 
 ipcMain.handle('stop-container', async (event, containerName) => {
-    if (containerName === 'phyreamp-mysql') {
+    if (containerName === appConfig.prefix + '-mysql') {
         return await stopMySQLContainer();
-    } else if (containerName === 'phyreamp-phpmyadmin') {
+    } else if (containerName === appConfig.prefix + '-phpmyadmin') {
         return await stopPhpMyAdminContainer();
     }
     try {
@@ -235,9 +236,9 @@ ipcMain.handle('stop-container', async (event, containerName) => {
 });
 
 ipcMain.handle('restart-container', async (event, containerName) => {
-    if (containerName === 'phyreamp-mysql') {
+    if (containerName === appConfig.prefix + '-mysql') {
         return await restartMySQLContainer();
-    } else if (containerName === 'phyreamp-phpmyadmin') {
+    } else if (containerName === appConfig.prefix + '-phpmyadmin') {
         return await restartContainer(containerName);
     }
     try {
@@ -252,7 +253,7 @@ ipcMain.handle('start-all-containers', async () => {
     try {
         const {checkContainerExists} = require('./dockerService');
 
-        const httpdExists = await checkContainerExists('phyreamp-httpd');
+        const httpdExists = await checkContainerExists(appConfig.prefix + '-httpd');
         if (!httpdExists.exists) {
             await rebuildVirtualHostContainers();
         }
@@ -323,16 +324,16 @@ ipcMain.handle('generate-httpd-conf', async () => {
 });
 
 ipcMain.handle('status-container', async (event, containerName) => {
-    if (containerName === 'phyreamp-phpmyadmin') {
+    if (containerName === appConfig.prefix + '-phpmyadmin') {
         return await getPhpMyAdminContainerStatus();
     }
-    if (containerName === 'phyreamp-mysql') {
+    if (containerName === appConfig.prefix + '-mysql') {
         return await getMySQLContainerStatus();
     }
-    if (containerName === 'phyreamp-redis') {
+    if (containerName === appConfig.prefix + '-redis') {
         return await getRedisContainerStatus();
     }
-    if (containerName === 'phyreamp-httpd') {
+    if (containerName === appConfig.prefix + '-httpd') {
         return await getHttpdContainerStatus();
     }
 
@@ -380,9 +381,9 @@ ipcMain.handle('rebuild-containers', async (event) => {
 
     const {getNetworkStatus, createNetwork} = require('./dockerService');
 
-    const networkStatus = await getNetworkStatus('phyreamp-network');
+    const networkStatus = await getNetworkStatus(appConfig.prefix + '-network');
     if (!networkStatus.success) {
-        const createNetworkResult = await createNetwork('phyreamp-network');
+        const createNetworkResult = await createNetwork(appConfig.prefix + '-network');
         if (!createNetworkResult.success) {
             return {success: false, error: createNetworkResult.error};
         }
@@ -411,11 +412,13 @@ async function rebuildVirtualHostContainers() {
 
     // Get all existing PHP-FPM containers
     const containers = await docker.listContainers({all: true});
-    const phpFpmContainers = containers.filter(container => container.Names.some(name => name.includes('phyreamp-php')));
+    const phpFpmContainers = containers.filter(container => container.Names.some(name => name.includes(appConfig.prefix + '-php')));
 
     // Determine which containers to delete
     const containersToDelete = phpFpmContainers.filter(container => {
-        const version = container.Names[0].match(/phyreamp-php(\d+)/);
+        const phpContainerName = appConfig.prefix + '-php';
+        //const version = container.Names[0].match(/phyreamp-php(\d+)/);
+        const version = container.Names[0].match(/${phpContainerName}(\d+)/);
         return version && !phpVersions.includes(version[1].replace(/(\d)(\d)/, '$1.$2'));
     });
 

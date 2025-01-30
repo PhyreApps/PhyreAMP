@@ -1,5 +1,6 @@
 import * as React from 'react';
 import './ServiceStatus.css';
+import {appConfig} from "../config";
 
 const ServiceStatus = () => {
 
@@ -37,10 +38,10 @@ const ServiceStatus = () => {
         const fetchContainerStatuses = async () => {
             let virtualHosts = await fetchVirtualHosts();
             await fetchSettings();
-            const httpdStatus = await window.electron.ipcRenderer.invoke('status-container', 'phyreamp-httpd') || {};
-            const mysqlStatus = await window.electron.ipcRenderer.invoke('status-container', 'phyreamp-mysql') || {};
-            const redisStatus = await window.electron.ipcRenderer.invoke('status-container', 'phyreamp-redis') || {};
-            const phpmyadminStatus = await window.electron.ipcRenderer.invoke('status-container', 'phyreamp-phpmyadmin') || {};
+            const httpdStatus = await window.electron.ipcRenderer.invoke('status-container', appConfig.prefix + '-httpd') || {};
+            const mysqlStatus = await window.electron.ipcRenderer.invoke('status-container', appConfig.prefix + '-mysql') || {};
+            const redisStatus = await window.electron.ipcRenderer.invoke('status-container', appConfig.prefix + '-redis') || {};
+            const phpmyadminStatus = await window.electron.ipcRenderer.invoke('status-container', appConfig.prefix + '-phpmyadmin') || {};
             const phpfpmsStatuses = {};
             for (const host of virtualHosts) {
                 const status = await window.electron.ipcRenderer.invoke('phpfpm-container-status', host.php_version) || {};

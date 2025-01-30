@@ -1,10 +1,12 @@
+import {appConfig} from "./config";
+
 const Docker = require('dockerode');
 import { getSettings } from './database.js';
 var docker = new Docker();
 
 const startRedisContainer = async () => {
     try {
-        const container = docker.getContainer('phyreamp-redis');
+        const container = docker.getContainer(appConfig.prefix + '-redis');
         await container.start();
         return { success: true, message: 'Redis container started successfully.' };
     } catch (error) {
@@ -14,7 +16,7 @@ const startRedisContainer = async () => {
 
 const stopRedisContainer = async () => {
     try {
-        const container = docker.getContainer('phyreamp-redis');
+        const container = docker.getContainer(appConfig.prefix + '-redis');
         await container.stop();
         return { success: true, message: 'Redis container stopped successfully.' };
     } catch (error) {
@@ -24,7 +26,7 @@ const stopRedisContainer = async () => {
 
 const getRedisContainerStatus = async () => {
     try {
-        const container = docker.getContainer('phyreamp-redis');
+        const container = docker.getContainer(appConfig.prefix + '-redis');
         const data = await container.inspect();
         if (data.State.Running) {
             return { success: true, message: `Running` };
@@ -37,7 +39,7 @@ const getRedisContainerStatus = async () => {
 
 const createRedisContainer = async () => {
     try {
-        const container = docker.getContainer('phyreamp-redis');
+        const container = docker.getContainer(appConfig.prefix + '-redis');
         const data = await container.inspect();
         if (data) {
             return { success: true, message: 'Redis container already exists.' };
@@ -67,9 +69,9 @@ const createRedisContainer = async () => {
                 const settings = await getSettings();
                 const container = await docker.createContainer({
                     Image: 'redis:latest',
-                    name: 'phyreamp-redis',
+                    name: appConfig.prefix + '-redis',
                     HostConfig: {
-                        NetworkMode: 'phyreamp-network',
+                        NetworkMode: appConfig.prefix + '-network',
                         PortBindings: {
                             '6379/tcp': [{ HostPort: (settings.redisPort || '6379').toString() }]
                         }
@@ -87,7 +89,7 @@ const createRedisContainer = async () => {
 
 const deleteRedisContainer = async () => {
     try {
-        const container = docker.getContainer('phyreamp-redis');
+        const container = docker.getContainer(appConfig.prefix + '-redis');
         await container.remove({ force: true });
         return { success: true, message: 'Redis container deleted successfully.' };
     } catch (error) {
@@ -97,7 +99,7 @@ const deleteRedisContainer = async () => {
 
 const restartRedisContainer = async () => {
     try {
-        const container = docker.getContainer('phyreamp-redis');
+        const container = docker.getContainer(appConfig.prefix + '-redis');
         await container.restart();
         return { success: true, message: 'Redis container restarted successfully.' };
     } catch (error) {

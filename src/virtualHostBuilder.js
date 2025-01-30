@@ -3,6 +3,7 @@ import path from 'path';
 import { getVirtualHosts } from './database';
 import { app } from 'electron';
 import { addVirtualHostsToHostsFile, removeVirtualHostsFromHostsFile } from './osHostService';
+import {appConfig} from "./config";
 
 const dockerApachePath =
     process.env.NODE_ENV === 'development'
@@ -93,7 +94,7 @@ const generateHttpdConf = async () => {
         Require all granted
 
         <FilesMatch ".+\\.ph(ar|p|tml)$"> 
-            SetHandler "proxy:fcgi://phyreamp-php${host.php_version.replace('.', '')}-fpm:9000"
+            SetHandler "proxy:fcgi://${appConfig.prefix}-php${host.php_version.replace('.', '')}-fpm:9000"
         </FilesMatch>
     
     </Directory> 

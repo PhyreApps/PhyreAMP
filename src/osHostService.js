@@ -1,11 +1,12 @@
 import fs from 'fs';
 import os from 'os';
+import {appConfig} from "./config";
 
 const HOSTS_FILE_PATH = process.platform === 'win32'
     ? 'C:\\Windows\\System32\\drivers\\etc\\hosts'
     : '/etc/hosts';
-const START_MARKER = '# Start PhyreAMP Virtual Hosts';
-const END_MARKER = '# End PhyreAMP Virtual Hosts';
+const START_MARKER = '# Start ' + appConfig.name + ' Virtual Hosts';
+const END_MARKER = '# End ' + appConfig.name + ' Virtual Hosts';
 
 const readHostsFile = () => {
     try {
@@ -26,7 +27,7 @@ const writeHostsFile = async (content) => {
     }
 };
 
-const addVirtualHostsToHostsFile = async(virtualHosts) => {
+const addVirtualHostsToHostsFile = async (virtualHosts) => {
     const hosts = readHostsFile().split(os.EOL);
 
     const newEntries = virtualHosts.map(host => `127.0.0.1 ${host.local_domain}`);

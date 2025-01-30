@@ -1,7 +1,5 @@
 import {app} from "electron";
-
-const appConfig = {'name': 'PhyreAMP', 'folder': app.getPath('userData'), 'prefix': 'phyreamp'};
-console.log(appConfig);
+import {appConfig} from './config';
 
 const Docker = require('dockerode');
 const path = require('path');
@@ -11,7 +9,7 @@ const docker = new Docker();
 
 const startMySQLContainer = async () => {
     try {
-        const container = docker.getContainer('phyreamp-mysql');
+        const container = docker.getContainer(appConfig.prefix + '-mysql');
         await container.start();
         return {success: true, message: 'MySQL container started successfully.'};
     } catch (error) {
@@ -21,7 +19,7 @@ const startMySQLContainer = async () => {
 
 const stopMySQLContainer = async () => {
     try {
-        const container = docker.getContainer('phyreamp-mysql');
+        const container = docker.getContainer(appConfig.prefix + '-mysql');
         await container.stop();
         return {success: true, message: 'MySQL container stopped successfully.'};
     } catch (error) {
@@ -31,7 +29,7 @@ const stopMySQLContainer = async () => {
 
 const restartMySQLContainer = async () => {
     try {
-        const container = docker.getContainer('phyreamp-mysql');
+        const container = docker.getContainer(appConfig.prefix + '-mysql');
         await container.restart();
         return {success: true, message: 'MySQL container restarted successfully.'};
     } catch (error) {
@@ -41,7 +39,7 @@ const restartMySQLContainer = async () => {
 
 const getMySQLContainerStatus = async () => {
     try {
-        const container = docker.getContainer('phyreamp-mysql');
+        const container = docker.getContainer(appConfig.prefix + '-mysql');
         const data = await container.inspect();
         if (data.State.Running) {
             return {success: true, message: `Running`};
@@ -54,7 +52,7 @@ const getMySQLContainerStatus = async () => {
 
 const createMysqlContainer = async () => {
     try {
-        const container = docker.getContainer('phyreamp-mysql');
+        const container = docker.getContainer(appConfig.prefix + '-mysql');
         const data = await container.inspect();
         if (data) {
             return {success: true, message: 'MySQL container already exists.'};
@@ -84,19 +82,19 @@ const createMysqlContainer = async () => {
                 const settings = await getSettings();
                 const container = await docker.createContainer({
                     Image: 'mysql:8.0',
-                    name: 'phyreamp-mysql',
+                    name: appConfig.prefix + '-mysql',
                     Env: [
                         `MYSQL_ROOT_PASSWORD=${settings.mysqlRootPassword || 'root'}`,
-                        'MYSQL_DATABASE=phyreamp',
-                        'MYSQL_USER=phyreamp',
-                        'MYSQL_PASSWORD=phyreamp'
+                        'MYSQL_DATABASE=' + appConfig.prefix + '',
+                        'MYSQL_USER=' + appConfig.prefix + '',
+                        'MYSQL_PASSWORD=' + appConfig.prefix + ''
                     ],
                     HostConfig: {
-                        NetworkMode: 'phyreamp-network',
+                        NetworkMode: appConfig.prefix + '-network',
                         PortBindings: {
                             '3306/tcp': [{HostPort: (settings.mysqlPort || '3306').toString()}]
                         },
-                        Binds: [path.join(appConfig.folder, 'mysql-data') + ':/var/lib/mysql']
+                        Binds: [path.join(app.getPath('userData'), 'mysql-data') + ':/var/lib/mysql']
                     }
                 });
                 await container.start();
@@ -111,7 +109,7 @@ const createMysqlContainer = async () => {
 
 const deleteMysqlContainer = async () => {
     try {
-        const container = docker.getContainer('phyreamp-mysql');
+        const container = docker.getContainer(appConfig.prefix + '-mysql');
         await container.remove({force: true});
         return {success: true, message: 'MySQL container deleted successfully.'};
     } catch (error) {
