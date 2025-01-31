@@ -182,7 +182,7 @@ ipcMain.handle('save-virtual-host', async (event, formData) => {
 
 ipcMain.handle('get-virtual-hosts', async () => {
     try {
-        const hosts = await getVirtualHosts();
+        const hosts = await getVirtualHosts(true);
         return hosts;
     } catch (error) {
         return {success: false, error: error.message};

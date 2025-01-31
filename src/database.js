@@ -22,17 +22,34 @@ db.serialize(() => {
         value TEXT NOT NULL
     )`);
 });
-export const getVirtualHosts = () => {
+export const getVirtualHosts = (createDefault = false) => {
     return new Promise((resolve, reject) => {
-        db.all(`SELECT * FROM virtual_hosts`, (err, rows) => {
+        const rows = db.all(`SELECT * FROM virtual_hosts`, (err, rows) => {
             if (err) {
                 reject(err);
             } else {
                 resolve(rows);
+                if(createDefault){
+                    createDefaultHost(rows);
+                }
             }
         });
     });
 };
+
+export const createDefaultHost = (rows) => {
+    const hasDefaultLocalhost = rows.filter(row => row.local_domain === appConfig.defaultApp.host);
+    if (hasDefaultLocalhost.length == 0) {
+        let folder = app.getPath('userData') + '/htdocs'
+        if (appConfig.defaultApp.folder != 'htdocs') {
+            folder = appConfig.defaultApp.folder
+        }
+        db.run(`
+                INSERT INTO "virtual_hosts" ("name", "document_root", "php_version", "local_domain", "project_path", "public_folder")
+                VALUES ('${appConfig.defaultApp.name}', NULL, '${appConfig.defaultApp.phpVersion}', '${appConfig.defaultApp.host}', '${folder}', '/');
+        `);
+    }
+}
 
 export const saveSettings = (settings) => {
     return new Promise((resolve, reject) => {

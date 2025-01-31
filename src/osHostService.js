@@ -19,7 +19,8 @@ const readHostsFile = () => {
 
 const writeHostsFile = async (content) => {
     try {
-        return true;
+        //bypass writing to hosts file in development mode
+        //return true;
         await fs.writeFileSync(HOSTS_FILE_PATH, content, 'utf8');
     } catch (error) {
         console.error(`Error writing to hosts file: ${error.message}`);
